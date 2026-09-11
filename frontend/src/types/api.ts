@@ -1,0 +1,22 @@
+export interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  timestamp: string;
+}
+
+export interface PagedResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
+export interface HealthStatus {
+  status: string;
+  service: string;
+  version: string;
+  timestamp: string;
+}

@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    com.jobplatform: DEBUG
+    org.springframework.web: DEBUG

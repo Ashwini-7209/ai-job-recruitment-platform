@@ -1,0 +1,12 @@
+package com.jobplatform.notification;
+
+public enum NotificationType {
+    APPLICATION_RECEIVED,
+    APPLICATION_STATUS_CHANGED,
+    INTERVIEW_SCHEDULED,
+    INTERVIEW_RESCHEDULED,
+    INTERVIEW_CANCELLED,
+    JOB_RECOMMENDATION,
+    JOB_ALERT_MATCH,
+    GENERAL
+}

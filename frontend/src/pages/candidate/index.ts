@@ -1,0 +1,11 @@
+export { default as CandidateIndex } from './CandidateIndex';
+export { default as CandidateDashboardPage } from './CandidateDashboardPage';
+export { default as CandidateApplicationsPage } from './CandidateApplicationsPage';
+export { default as CandidateApplicationDetailPage } from './CandidateApplicationDetailPage';
+export { default as CandidateInterviewsPage } from './CandidateInterviewsPage';
+export { default as SavedJobsPage } from './SavedJobsPage';
+export { default as CandidateJobAlertsPage } from './CandidateJobAlertsPage';
+export { default as NotificationPreferencesPage } from './NotificationPreferencesPage';
+export { default as CandidateAnalyticsPage } from './CandidateAnalyticsPage';
+export { default as CareerAssistantPage } from './CareerAssistantPage';
+export { default as SkillGapPage } from './SkillGapPage';

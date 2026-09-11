@@ -1,0 +1,55 @@
+# === Java / Maven ===
+backend/target/
+backend/*.class
+backend/*.jar
+backend/*.war
+*.log
+hs_err_pid*
+
+# === Node / Frontend ===
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.cache/
+
+# === IDE ===
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.code-workspace
+.settings/
+.classpath
+.project
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.tmp
+
+# === Environment / Secrets ===
+.env
+.env.local
+.env.*.local
+backend/.env
+*.env.local
+
+# === Keep example config tracked ===
+!.env.example
+
+# === Logs ===
+logs/
+*.log
+log/
+
+# === Docker ===
+docker-compose.override.yml
+
+# === Build artifacts ===
+*.tar.gz
+*.zip

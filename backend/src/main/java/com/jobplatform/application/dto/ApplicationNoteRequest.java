@@ -1,0 +1,19 @@
+package com.jobplatform.application.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ApplicationNoteRequest {
+
+    @NotBlank(message = "Note cannot be blank")
+    @Size(max = 5000, message = "Note must not exceed 5000 characters")
+    private String note;
+}

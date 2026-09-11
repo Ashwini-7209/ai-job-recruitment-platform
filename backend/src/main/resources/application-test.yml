@@ -1,0 +1,38 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  flyway:
+    enabled: true
+  h2:
+    console:
+      enabled: false
+
+jwt:
+  secret: test-secret-key-for-testing-only-change-in-production
+  expiration-ms: 86400000
+
+logging:
+  level:
+    com.jobplatform: DEBUG
+    org.springframework.web: DEBUG
+
+app:
+  storage:
+    resume-directory: test-uploads/resumes
+  resume:
+    parsing:
+      max-text-length: 80000
+      ai:
+        api-key: test-key
+        model: gpt-4o-mini
+        max-tokens: 4000
