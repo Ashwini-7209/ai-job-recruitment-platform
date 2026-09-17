@@ -49,6 +49,7 @@ frontend/.env.*
 !.env.example
 !.env.production.example
 !backend/.env.example
+!render.yaml
 
 # === Logs ===
 logs/
