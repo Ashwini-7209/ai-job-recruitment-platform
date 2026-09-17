@@ -48,11 +48,8 @@ public class RecruiterInterviewController {
     public ResponseEntity<ApiResponse<List<RecruiterInterviewResponse>>> getApplicationInterviews(
             @PathVariable Long applicationId) {
         User recruiter = CurrentUserUtil.getCurrentUser();
-        PagedResponse<RecruiterInterviewResponse> response = interviewService.getRecruiterInterviews(recruiter, 0, 50, "oldest");
-        List<RecruiterInterviewResponse> filtered = response.getContent().stream()
-                .filter(i -> i.getApplicationId().equals(applicationId))
-                .toList();
-        return ResponseEntity.ok(ApiResponse.success(filtered));
+        List<RecruiterInterviewResponse> response = interviewService.getInterviewsByApplication(recruiter, applicationId);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/interviews")

@@ -22,15 +22,21 @@ public class ApplicationStatusHistoryService {
 
     @Transactional
     public void recordTransition(Application application, ApplicationStatus oldStatus, ApplicationStatus newStatus, User changedBy) {
+        recordTransition(application, oldStatus, newStatus, changedBy, null);
+    }
+
+    @Transactional
+    public void recordTransition(Application application, ApplicationStatus oldStatus, ApplicationStatus newStatus, User changedBy, String reason) {
         ApplicationStatusHistory history = ApplicationStatusHistory.builder()
                 .application(application)
                 .oldStatus(oldStatus)
                 .newStatus(newStatus)
                 .changedBy(changedBy)
+                .reason(reason)
                 .build();
 
         historyRepository.save(history);
-        log.debug("Status history recorded: application={} {} -> {}", application.getId(), oldStatus, newStatus);
+        log.debug("Status history recorded: application={} {} -> {} reason={}", application.getId(), oldStatus, newStatus, reason);
     }
 
     @Transactional(readOnly = true)

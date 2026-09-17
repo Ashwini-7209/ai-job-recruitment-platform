@@ -79,7 +79,7 @@ export default function FeatureGrid() {
     <section className="py-16 sm:py-20 bg-white" id="features">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <p className="text-overline text-primary-600 mb-3">Platform Features</p>
+          <p className="text-overline text-secondary-500 mb-3">Platform Features</p>
           <h2 className="text-display-sm text-neutral-900">
             Everything you need in one platform
           </h2>
@@ -93,7 +93,7 @@ export default function FeatureGrid() {
               key={feature.title}
               className="rounded-xl bg-neutral-50 ring-1 ring-neutral-100 p-5 hover:bg-neutral-100/50 transition-colors duration-200"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-primary-600 ring-1 ring-neutral-200 mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-secondary-700 ring-1 ring-neutral-200 mb-4">
                 {feature.icon}
               </div>
               <h3 className="text-heading-md text-neutral-900">{feature.title}</h3>

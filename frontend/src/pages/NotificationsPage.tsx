@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Button, Badge, EmptyState, Skeleton } from '@/components/ui';
+import { useAuth } from '@/contexts';
 import { notificationService, type Notification, type NotificationType } from '@/services/notification.service';
 
 function formatTimeAgo(dateString: string): string {
@@ -39,20 +40,20 @@ function getNotificationColor(type: NotificationType): string {
   switch (type) {
     case 'APPLICATION_RECEIVED':
     case 'APPLICATION_STATUS_CHANGED':
-      return 'text-primary-600 bg-primary-50';
+      return 'text-secondary-600 bg-secondary-50';
     case 'INTERVIEW_SCHEDULED':
     case 'INTERVIEW_RESCHEDULED':
       return 'text-success-600 bg-success-50';
     case 'INTERVIEW_CANCELLED':
       return 'text-error-600 bg-error-50';
     case 'JOB_RECOMMENDATION':
-      return 'text-accent-600 bg-accent-50';
+      return 'text-secondary-600 bg-secondary-50';
     default:
       return 'text-neutral-500 bg-neutral-100';
   }
 }
 
-function getNotificationBadgeVariant(type: NotificationType): 'primary' | 'success' | 'error' | 'accent' | 'default' {
+function getNotificationBadgeVariant(type: NotificationType): 'primary' | 'success' | 'error' | 'secondary' | 'default' {
   switch (type) {
     case 'APPLICATION_RECEIVED':
     case 'APPLICATION_STATUS_CHANGED':
@@ -63,7 +64,7 @@ function getNotificationBadgeVariant(type: NotificationType): 'primary' | 'succe
     case 'INTERVIEW_CANCELLED':
       return 'error';
     case 'JOB_RECOMMENDATION':
-      return 'accent';
+      return 'secondary';
     default:
       return 'default';
   }
@@ -90,6 +91,7 @@ function getNotificationTypeLabel(type: NotificationType): string {
 
 export default function NotificationsPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -107,7 +109,7 @@ export default function NotificationsPage() {
       }
       setHasMore(!result.last);
     } catch {
-      // Error handled silently
+      // Silent - notifications are non-critical
     } finally {
       setIsLoading(false);
     }
@@ -147,9 +149,11 @@ export default function NotificationsPage() {
     handleMarkAsRead(notification.id);
     if (notification.entityId && notification.entityType) {
       if (notification.entityType === 'APPLICATION') {
-        navigate(`/candidate/applications/${notification.entityId}`);
+        navigate(user?.role === 'RECRUITER' ? `/recruiter/applications/${notification.entityId}` : user?.role === 'ADMIN' ? `/admin/applications` : `/candidate/applications/${notification.entityId}`);
       } else if (notification.entityType === 'INTERVIEW') {
-        navigate('/candidate/interviews');
+        navigate(user?.role === 'RECRUITER' ? '/recruiter/interviews' : user?.role === 'ADMIN' ? '/admin/dashboard' : '/candidate/interviews');
+      } else if (notification.entityType === 'JOB') {
+        navigate(user?.role === 'RECRUITER' ? `/recruiter/jobs/${notification.entityId}` : user?.role === 'ADMIN' ? '/admin/jobs' : '/candidate/jobs');
       }
     }
   };
@@ -183,7 +187,7 @@ export default function NotificationsPage() {
           onClick={() => setFilter('all')}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
             filter === 'all'
-              ? 'bg-primary-50 text-primary-700'
+              ? 'bg-secondary-50 text-secondary-700'
               : 'text-neutral-500 hover:bg-neutral-100'
           }`}
         >
@@ -193,7 +197,7 @@ export default function NotificationsPage() {
           onClick={() => setFilter('unread')}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
             filter === 'unread'
-              ? 'bg-primary-50 text-primary-700'
+              ? 'bg-secondary-50 text-secondary-700'
               : 'text-neutral-500 hover:bg-neutral-100'
           }`}
         >
@@ -240,7 +244,7 @@ export default function NotificationsPage() {
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
                   className={`flex w-full items-start gap-3 px-4 py-4 text-left transition-colors hover:bg-neutral-50 ${
-                    !notification.read ? 'bg-primary-50/20' : ''
+                    !notification.read ? 'bg-secondary-50/20' : ''
                   }`}
                 >
                   <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${getNotificationColor(notification.type)}`}>
@@ -265,7 +269,7 @@ export default function NotificationsPage() {
                     </p>
                   </div>
                   {!notification.read && (
-                    <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary-500" />
+                    <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-secondary-500" />
                   )}
                 </button>
               ))}

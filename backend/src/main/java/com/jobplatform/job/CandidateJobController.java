@@ -12,6 +12,7 @@ import com.jobplatform.job.enums.WorkplaceType;
 import com.jobplatform.savedjob.SavedJobRepository;
 import com.jobplatform.user.User;
 import com.jobplatform.user.UserRole;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -51,30 +53,23 @@ public class CandidateJobController {
             @RequestParam(required = false) Integer experienceMax,
             @RequestParam(required = false) Integer salaryMin,
             @RequestParam(required = false) Integer salaryMax,
+            @RequestParam(required = false) String skills,
+            @RequestParam(required = false) String companyName,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postedAfter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "newest") String sort) {
 
         User candidate = CurrentUserUtil.getCurrentUser();
 
-        PagedResponse<JobSummaryResponse> baseResponse;
-        boolean hasFilters = q != null || location != null || employmentType != null ||
-                workplaceType != null || experienceMin != null || experienceMax != null ||
-                salaryMin != null || salaryMax != null;
-
-        if (q != null && !q.trim().isEmpty()) {
-            baseResponse = jobService.searchPublishedJobs(q.trim(), page, size, sort);
-        } else if (hasFilters) {
-            baseResponse = jobService.filterPublishedJobs(
-                    location, employmentType, workplaceType,
-                    experienceMin, experienceMax, salaryMin, salaryMax,
-                    page, size, sort);
-        } else {
-            baseResponse = jobService.getPublishedJobs(page, size, sort);
-        }
+        PagedResponse<JobSummaryResponse> baseResponse = jobService.searchPublishedJobsCombined(
+                q, location, employmentType, workplaceType,
+                experienceMin, experienceMax, salaryMin, salaryMax,
+                skills, companyName, postedAfter,
+                page, size, sort);
 
         List<Long> jobIds = baseResponse.getContent().stream()
-                .map(JobSummaryResponse::getId)
+                .map(JobSummaryResponse::getJobId)
                 .toList();
 
         Set<Long> savedJobIds = Collections.emptySet();
@@ -93,8 +88,8 @@ public class CandidateJobController {
         List<JobSummaryWithSavedResponse> enrichedContent = baseResponse.getContent().stream()
                 .map(base -> {
                     JobSummaryWithSavedResponse enriched = JobSummaryWithSavedResponse.from(base);
-                    enriched.setSaved(finalSavedJobIds.contains(base.getId()));
-                    enriched.setApplied(finalAppliedJobIds.contains(base.getId()));
+                    enriched.setSaved(finalSavedJobIds.contains(base.getJobId()));
+                    enriched.setApplied(finalAppliedJobIds.contains(base.getJobId()));
                     return enriched;
                 })
                 .toList();
@@ -122,13 +117,20 @@ public class CandidateJobController {
 
         JobSummaryWithSavedResponse response = new JobSummaryWithSavedResponse();
         response.setId(baseResponse.getId());
+        response.setJobId(baseResponse.getId());
         response.setTitle(baseResponse.getTitle());
+        response.setDescription(baseResponse.getDescription());
+        response.setRecruiterName(baseResponse.getRecruiterName());
         response.setLocation(baseResponse.getLocation());
         response.setEmploymentType(baseResponse.getEmploymentType());
         response.setWorkplaceType(baseResponse.getWorkplaceType());
+        response.setExperienceMin(baseResponse.getExperienceMin());
+        response.setExperienceMax(baseResponse.getExperienceMax());
         response.setSalaryMin(baseResponse.getSalaryMin());
         response.setSalaryMax(baseResponse.getSalaryMax());
         response.setSkills(baseResponse.getSkills());
+        response.setStatus(baseResponse.getStatus());
+        response.setPublishedAt(baseResponse.getPublishedAt());
         response.setApplicationDeadline(baseResponse.getApplicationDeadline());
         response.setCreatedAt(baseResponse.getCreatedAt());
         response.setSaved(saved);

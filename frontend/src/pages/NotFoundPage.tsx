@@ -1,14 +1,16 @@
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui';
 import PublicNavbar from '@/components/landing/PublicNavbar';
 import PublicFooter from '@/components/landing/PublicFooter';
 
 export default function NotFoundPage() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-white">
       <PublicNavbar />
       <main className="flex items-center justify-center py-20">
         <div className="text-center px-4">
-          <p className="text-display-lg text-primary-600">404</p>
+          <p className="text-display-lg text-secondary-600">404</p>
           <h1 className="mt-4 text-heading-lg text-neutral-900">
             Page not found
           </h1>
@@ -18,7 +20,7 @@ export default function NotFoundPage() {
           <div className="mt-6">
             <Button
               variant="primary"
-              onClick={() => window.location.href = '/'}
+              onClick={() => navigate('/')}
             >
               Go back home
             </Button>

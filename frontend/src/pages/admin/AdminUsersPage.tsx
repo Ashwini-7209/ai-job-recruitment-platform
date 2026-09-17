@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button, Card, CardContent, Input, Select, Badge, EmptyState, Skeleton } from '@/components/ui';
 import { adminService, type AdminUser } from '@/services/admin.service';
 
@@ -22,11 +23,13 @@ const roleBadgeColors: Record<string, 'primary' | 'success' | 'info' | 'warning'
 };
 
 export default function AdminUsersPage() {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [roleFilter, setRoleFilter] = useState('');
+  const [roleFilter, setRoleFilter] = useState(searchParams.get('role') || '');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -45,9 +48,9 @@ export default function AdminUsersPage() {
       });
       if (response.success && response.data) {
         if (reset || pageNum === 0) {
-          setUsers(response.data.content);
+          setUsers(response.data.content ?? []);
         } else {
-          setUsers(prev => [...prev, ...response.data!.content]);
+          setUsers(prev => [...prev, ...(response.data!.content ?? [])]);
         }
         setHasMore(!response.data.last);
         setTotalElements(response.data.totalElements);
@@ -57,6 +60,16 @@ export default function AdminUsersPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRoleChange = (value: string) => {
+    setRoleFilter(value);
+    setPage(0);
+    if (value) {
+      setSearchParams({ role: value });
+    } else {
+      setSearchParams({});
     }
   };
 
@@ -85,7 +98,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[var(--content-max-width)] mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-heading-lg text-neutral-900">User Management</h1>
@@ -116,7 +129,7 @@ export default function AdminUsersPage() {
             <Select
               options={roleOptions}
               value={roleFilter}
-              onChange={e => setRoleFilter(e.target.value)}
+              onChange={e => handleRoleChange(e.target.value)}
               className="w-full sm:w-40"
             />
             <Select
@@ -166,9 +179,9 @@ export default function AdminUsersPage() {
             <Card key={user.id}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                    <span className="text-body-sm font-medium text-primary-700">
-                      {user.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary-100 flex items-center justify-center">
+                    <span className="text-body-sm font-medium text-secondary-700">
+                      {(user.fullName || '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -185,6 +198,13 @@ export default function AdminUsersPage() {
                     <span>Joined {formatDate(user.createdAt)}</span>
                   </div>
                   <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigate(`/admin/users/${user.id}`)}
+                    >
+                      View
+                    </Button>
                     <Button
                       variant={user.enabled ? 'outline' : 'primary'}
                       size="sm"
@@ -203,8 +223,9 @@ export default function AdminUsersPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setPage(prev => prev + 1);
-                  fetchUsers(page + 1);
+                  const nextPage = page + 1;
+                  setPage(nextPage);
+                  fetchUsers(nextPage);
                 }}
                 loading={loading}
               >

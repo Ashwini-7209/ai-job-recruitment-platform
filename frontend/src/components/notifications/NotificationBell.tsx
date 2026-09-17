@@ -40,14 +40,14 @@ function getNotificationColor(type: Notification['type']): string {
   switch (type) {
     case 'APPLICATION_RECEIVED':
     case 'APPLICATION_STATUS_CHANGED':
-      return 'text-primary-600';
+      return 'text-secondary-600';
     case 'INTERVIEW_SCHEDULED':
     case 'INTERVIEW_RESCHEDULED':
       return 'text-success-600';
     case 'INTERVIEW_CANCELLED':
       return 'text-error-600';
     case 'JOB_RECOMMENDATION':
-      return 'text-accent-600';
+      return 'text-secondary-600';
     default:
       return 'text-neutral-500';
   }
@@ -159,7 +159,7 @@ function NotificationBell() {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllAsRead}
-                className="text-xs font-medium text-primary-600 hover:text-primary-700"
+                className="text-xs font-medium text-secondary-600 hover:text-secondary-700"
               >
                 Mark all read
               </button>
@@ -169,7 +169,7 @@ function NotificationBell() {
           <div className="max-h-80 overflow-y-auto">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-200 border-t-primary-600" />
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-secondary-200 border-t-secondary-600" />
               </div>
             ) : notifications.length === 0 ? (
               <div className="py-8 text-center text-sm text-neutral-500">
@@ -183,15 +183,18 @@ function NotificationBell() {
                     handleMarkAsRead(notification.id);
                     setIsOpen(false);
                     if (notification.entityId && notification.entityType) {
+                      const rolePrefix = user?.role === 'RECRUITER' ? '/recruiter' : user?.role === 'ADMIN' ? '/admin' : '/candidate';
                       if (notification.entityType === 'APPLICATION') {
-                        navigate(`/candidate/applications/${notification.entityId}`);
+                        navigate(user?.role === 'RECRUITER' ? `/recruiter/applications/${notification.entityId}` : user?.role === 'ADMIN' ? `/admin/applications` : `/candidate/applications/${notification.entityId}`);
                       } else if (notification.entityType === 'INTERVIEW') {
-                        navigate('/candidate/interviews');
+                        navigate(user?.role === 'ADMIN' ? `${rolePrefix}/dashboard` : `${rolePrefix}/interviews`);
+                      } else if (notification.entityType === 'JOB') {
+                        navigate(user?.role === 'RECRUITER' ? `/recruiter/jobs/${notification.entityId}` : user?.role === 'ADMIN' ? `/admin/jobs` : '/candidate/jobs');
                       }
                     }
                   }}
                   className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-neutral-50 ${
-                    !notification.read ? 'bg-primary-50/30' : ''
+                    !notification.read ? 'bg-secondary-50/30' : ''
                   }`}
                 >
                   <div className={`mt-0.5 shrink-0 ${getNotificationColor(notification.type)}`}>
@@ -211,7 +214,7 @@ function NotificationBell() {
                     </p>
                   </div>
                   {!notification.read && (
-                    <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary-500" />
+                    <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary-500" />
                   )}
                 </button>
               ))
@@ -222,7 +225,7 @@ function NotificationBell() {
             <div className="border-t border-neutral-100 px-4 py-2.5">
               <button
                 onClick={handleViewAll}
-                className="w-full text-center text-sm font-medium text-primary-600 hover:text-primary-700"
+                className="w-full text-center text-sm font-medium text-secondary-600 hover:text-secondary-700"
               >
                 View all notifications
               </button>

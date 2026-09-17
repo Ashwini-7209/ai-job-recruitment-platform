@@ -57,6 +57,9 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     boolean existsByApplicationAndScheduledStartLessThanEqualAndScheduledEndGreaterThanEqualAndStatusNot(
             Application application, LocalDateTime end, LocalDateTime start, InterviewStatus status);
 
+    // Find interviews by application and recruiter (for IDOR-safe lookup)
+    List<Interview> findByApplicationJobRecruiterAndApplicationIdOrderByScheduledStartAsc(User recruiter, Long applicationId);
+
     // Analytics queries
     long countByApplicationCandidate(User candidate);
 

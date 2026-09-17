@@ -36,7 +36,7 @@ export default function RecruiterLayout() {
       <NotificationBell />
       <div className="hidden sm:block h-6 w-px bg-neutral-200" />
       <button
-        onClick={() => navigate('/recruiter/company')}
+        onClick={() => navigate('/recruiter/profile')}
         className="flex items-center gap-2 rounded-lg p-1 hover:bg-neutral-100 transition-colors"
       >
         <Avatar size="sm" initials={initials} color="secondary" />

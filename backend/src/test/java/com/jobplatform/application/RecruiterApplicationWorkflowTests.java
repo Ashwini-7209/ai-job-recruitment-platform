@@ -406,7 +406,7 @@ class RecruiterApplicationWorkflowTests {
 
         mockMvc.perform(delete("/api/recruiters/me/applications/" + applicationId + "/notes/" + noteId)
                         .header("Authorization", "Bearer " + recruiterToken))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/recruiters/me/applications/" + applicationId + "/notes")
                         .header("Authorization", "Bearer " + recruiterToken))

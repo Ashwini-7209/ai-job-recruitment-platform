@@ -346,7 +346,7 @@ class InterviewManagementTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.interviewId").value(interviewId))
                 .andExpect(jsonPath("$.data.candidateName").value("Test Candidate"))
-                .andExpect(jsonPath("$.data.interviewerNotes").isEmpty());
+                .andExpect(jsonPath("$.data.interviewerNotes").doesNotExist());
     }
 
     // Test 15: Recruiter cannot view another recruiter's interview

@@ -19,7 +19,7 @@ export function BarChart({ data, height = 200 }: BarChartProps) {
             <div key={index} className="flex flex-col items-center flex-1 h-full justify-end">
               <span className="text-xs text-gray-600 mb-1">{item.value}</span>
               <div
-                className="w-full bg-primary-500 rounded-t"
+                className="w-full bg-secondary-500 rounded-t"
                 style={{ height: `${barHeight}%`, minHeight: '2px' }}
               />
               <span className="text-xs text-gray-500 mt-1 text-center truncate w-full" title={item.label}>

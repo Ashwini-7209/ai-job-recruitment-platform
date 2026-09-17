@@ -78,7 +78,7 @@ public class CandidateResumeController {
 
         response.setContentType(resume.getContentType());
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + resume.getOriginalFileName() + "\"");
+                "attachment; filename=\"" + resumeService.sanitizeHeaderFileName(resume.getOriginalFileName()) + "\"");
         response.setContentLength(resume.getFileSize().intValue());
 
         inputStream.transferTo(response.getOutputStream());

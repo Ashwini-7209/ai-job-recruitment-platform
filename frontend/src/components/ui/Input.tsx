@@ -35,11 +35,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             className={[
               'block w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-neutral-900',
               'placeholder:text-neutral-400',
-              'transition-colors duration-150 ease-in-out',
+              'transition-all duration-150 ease-in-out',
               'focus:outline-none focus:ring-2 focus:ring-offset-0',
               error
                 ? 'border-error-300 focus:border-error-500 focus:ring-error-500/20'
-                : 'border-neutral-300 focus:border-primary-500 focus:ring-primary-500/20',
+                : 'border-neutral-300 focus:border-secondary-500 focus:ring-secondary-500/20',
               leftIcon ? 'pl-10' : '',
               rightIcon ? 'pr-10' : '',
               props.disabled ? 'bg-neutral-50 text-neutral-500 cursor-not-allowed' : '',

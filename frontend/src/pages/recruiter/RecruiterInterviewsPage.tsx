@@ -24,11 +24,15 @@ const statusLabels: Record<string, string> = {
 };
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '-';
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function formatTime(dateStr: string): string {
-  return new Date(dateStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '-';
+  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
 function InterviewDetailModal({ interview, onClose, onUpdate, onCancel }: {
@@ -83,14 +87,14 @@ function InterviewDetailModal({ interview, onClose, onUpdate, onCancel }: {
   const canCancel = interview.status === 'SCHEDULED' || interview.status === 'RESCHEDULED';
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4" onClick={onClose}>
       <div className="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="p-5 border-b border-neutral-100 flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b border-neutral-100 flex items-center justify-between gap-2">
           <h3 className="text-heading-sm text-neutral-900">{editing ? 'Edit Interview' : 'Interview Details'}</h3>
-          <Badge variant={statusVariant[interview.status]}>{statusLabels[interview.status]}</Badge>
+          <Badge variant={statusVariant[interview.status]} size="sm">{statusLabels[interview.status]}</Badge>
         </div>
         {editing ? (
-          <form onSubmit={handleUpdate} className="p-5 space-y-4">
+          <form onSubmit={handleUpdate} className="p-4 sm:p-5 space-y-4">
             {error && <p className="text-body-sm text-error-600 bg-error-50 rounded-lg p-3">{error}</p>}
             <div>
               <label className="text-label-md text-neutral-700 block mb-1">Title</label>
@@ -108,14 +112,14 @@ function InterviewDetailModal({ interview, onClose, onUpdate, onCancel }: {
                 onChange={(e) => setForm({ ...form, interviewType: e.target.value as UpdateInterviewData['interviewType'] })}
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-label-md text-neutral-700 block mb-1">Start</label>
-                <input type="datetime-local" className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500" value={form.scheduledStart || ''} onChange={(e) => setForm({ ...form, scheduledStart: e.target.value })} />
+                <input type="datetime-local" className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary-500" value={form.scheduledStart || ''} onChange={(e) => setForm({ ...form, scheduledStart: e.target.value })} />
               </div>
               <div>
                 <label className="text-label-md text-neutral-700 block mb-1">End</label>
-                <input type="datetime-local" className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500" value={form.scheduledEnd || ''} onChange={(e) => setForm({ ...form, scheduledEnd: e.target.value })} />
+                <input type="datetime-local" className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary-500" value={form.scheduledEnd || ''} onChange={(e) => setForm({ ...form, scheduledEnd: e.target.value })} />
               </div>
             </div>
             <div>
@@ -124,7 +128,7 @@ function InterviewDetailModal({ interview, onClose, onUpdate, onCancel }: {
             </div>
             <div>
               <label className="text-label-md text-neutral-700 block mb-1">Notes</label>
-              <textarea className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[80px]" value={form.interviewerNotes || ''} onChange={(e) => setForm({ ...form, interviewerNotes: e.target.value })} />
+              <textarea className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary-500 min-h-[80px]" value={form.interviewerNotes || ''} onChange={(e) => setForm({ ...form, interviewerNotes: e.target.value })} />
             </div>
             <div className="flex gap-3 justify-end pt-2">
               <Button type="button" variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
@@ -132,15 +136,15 @@ function InterviewDetailModal({ interview, onClose, onUpdate, onCancel }: {
             </div>
           </form>
         ) : (
-          <div className="p-5 space-y-4">
+          <div className="p-4 sm:p-5 space-y-4">
             <div>
               <h4 className="text-body-md font-semibold text-neutral-900">{interview.title}</h4>
               <p className="text-body-sm text-neutral-500 mt-1">{interview.jobTitle} &middot; {interview.candidateName}</p>
             </div>
-            <div className="grid grid-cols-2 gap-3 text-body-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-body-sm">
               <div>
                 <span className="text-neutral-500">Type</span>
-                <p className="font-medium text-neutral-900">{typeLabels[interview.interviewType]}</p>
+                <p className="font-medium text-neutral-900">{typeLabels[interview.interviewType] || interview.interviewType}</p>
               </div>
               <div>
                 <span className="text-neutral-500">Interviewer</span>
@@ -159,7 +163,7 @@ function InterviewDetailModal({ interview, onClose, onUpdate, onCancel }: {
             {interview.meetingLink && (
               <div className="text-body-sm">
                 <span className="text-neutral-500">Meeting Link</span>
-                <a href={interview.meetingLink} target="_blank" rel="noopener noreferrer" className="block font-medium text-primary-600 hover:text-primary-700 truncate">{interview.meetingLink}</a>
+                <a href={interview.meetingLink} target="_blank" rel="noopener noreferrer" className="block font-medium text-secondary-600 hover:text-secondary-700 truncate">{interview.meetingLink}</a>
               </div>
             )}
             {interview.interviewerNotes && (
@@ -285,7 +289,7 @@ export default function RecruiterInterviewsPage() {
             {interviews.map((interview) => (
               <div
                 key={interview.interviewId}
-                className="rounded-lg border border-neutral-200 p-4 hover:border-primary-200 hover:shadow-sm transition-all cursor-pointer"
+                className="rounded-lg border border-neutral-200 p-4 hover:border-secondary-200 hover:shadow-sm transition-all cursor-pointer"
                 onClick={() => setSelectedInterview(interview)}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -295,7 +299,7 @@ export default function RecruiterInterviewsPage() {
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-body-sm text-neutral-500">
                       <span>{formatDate(interview.scheduledStart)}</span>
                       <span>{formatTime(interview.scheduledStart)} - {formatTime(interview.scheduledEnd)}</span>
-                      <span>{typeLabels[interview.interviewType]}</span>
+                      <span>{typeLabels[interview.interviewType] || interview.interviewType}</span>
                       {interview.location && <span>{interview.location}</span>}
                     </div>
                   </div>

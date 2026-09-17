@@ -64,7 +64,7 @@ export default function CareerAssistantPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {insights.strengths.map((s, i) => (
+                  {(insights.strengths || []).map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
                       <span className="text-green-500 mt-1">+</span>
                       {s}
@@ -80,7 +80,7 @@ export default function CareerAssistantPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {insights.recommendedSkills.map((s, i) => (
+                  {(insights.recommendedSkills || []).map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
                       <span className="text-blue-500 mt-1">•</span>
                       {s}
@@ -96,7 +96,7 @@ export default function CareerAssistantPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {insights.suggestedJobCategories.map((c, i) => (
+                  {(insights.suggestedJobCategories || []).map((c, i) => (
                     <Badge key={i} variant="default">{c}</Badge>
                   ))}
                 </div>
@@ -109,7 +109,7 @@ export default function CareerAssistantPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {insights.profileImprovements.map((s, i) => (
+                  {(insights.profileImprovements || []).map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
                       <span className="text-yellow-500 mt-1">!</span>
                       {s}
@@ -125,7 +125,7 @@ export default function CareerAssistantPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {insights.resumeImprovements.map((s, i) => (
+                  {(insights.resumeImprovements || []).map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
                       <span className="text-orange-500 mt-1">?</span>
                       {s}
@@ -141,7 +141,7 @@ export default function CareerAssistantPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {insights.generalCareerSuggestions.map((s, i) => (
+                  {(insights.generalCareerSuggestions || []).map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
                       <span className="text-purple-500 mt-1">→</span>
                       {s}

@@ -4,15 +4,17 @@ import { savedJobService } from '@/services/savedJob.service';
 export function useSaveJob(initialSaved: boolean = false) {
   const [isSaved, setIsSaved] = useState(initialSaved);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const save = useCallback(async (jobId: number) => {
     if (isLoading) return;
     setIsLoading(true);
+    setError(null);
     try {
       await savedJobService.saveJob(jobId);
       setIsSaved(true);
     } catch {
-      // Error handled silently
+      setError('Failed to save job. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -21,11 +23,12 @@ export function useSaveJob(initialSaved: boolean = false) {
   const unsave = useCallback(async (jobId: number) => {
     if (isLoading) return;
     setIsLoading(true);
+    setError(null);
     try {
       await savedJobService.unsaveJob(jobId);
       setIsSaved(false);
     } catch {
-      // Error handled silently
+      setError('Failed to remove saved job. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -39,5 +42,5 @@ export function useSaveJob(initialSaved: boolean = false) {
     }
   }, [isSaved, save, unsave]);
 
-  return { isSaved, isLoading, save, unsave, toggle, setIsSaved };
+  return { isSaved, isLoading, error, save, unsave, toggle, setIsSaved };
 }

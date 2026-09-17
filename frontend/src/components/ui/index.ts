@@ -9,3 +9,4 @@ export { IconButton, type IconButtonProps, type IconButtonSize } from './IconBut
 export { Skeleton, SkeletonText, SkeletonCircle, SkeletonCard, type SkeletonProps } from './Skeleton';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { Toggle, type ToggleProps } from './Toggle';
+export { Pagination } from './Pagination';

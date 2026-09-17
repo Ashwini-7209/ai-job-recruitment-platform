@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent, Input, Select, Badge, EmptyState, Skeleton } from '@/components/ui';
 import { adminService, type AdminJob } from '@/services/admin.service';
 
@@ -16,6 +17,7 @@ const statusBadgeColors: Record<string, 'default' | 'success' | 'warning' | 'err
 };
 
 export default function AdminJobsPage() {
+  const navigate = useNavigate();
   const [jobs, setJobs] = useState<AdminJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,9 +39,9 @@ export default function AdminJobsPage() {
       });
       if (response.success && response.data) {
         if (reset || pageNum === 0) {
-          setJobs(response.data.content);
+          setJobs(response.data.content ?? []);
         } else {
-          setJobs(prev => [...prev, ...response.data!.content]);
+          setJobs(prev => [...prev, ...(response.data!.content ?? [])]);
         }
         setHasMore(!response.data.last);
         setTotalElements(response.data.totalElements);
@@ -78,7 +80,7 @@ export default function AdminJobsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[var(--content-max-width)] mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-heading-lg text-neutral-900">Job Moderation</h1>
@@ -170,6 +172,13 @@ export default function AdminJobsPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigate(`/admin/jobs/${job.id}`)}
+                    >
+                      View
+                    </Button>
                     {job.status !== 'PUBLISHED' && (
                       <Button
                         variant="outline"
@@ -200,8 +209,9 @@ export default function AdminJobsPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setPage(prev => prev + 1);
-                  fetchJobs(page + 1);
+                  const nextPage = page + 1;
+                  setPage(nextPage);
+                  fetchJobs(nextPage);
                 }}
                 loading={loading}
               >

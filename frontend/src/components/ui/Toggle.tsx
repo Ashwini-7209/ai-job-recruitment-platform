@@ -52,7 +52,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
             <div
               className={[
                 'rounded-full bg-neutral-200 transition-colors duration-200 ease-in-out',
-                'peer-checked:bg-primary-600 peer-focus-visible:ring-2 peer-focus-visible:ring-primary-500/20',
+                'peer-checked:bg-secondary-500 peer-focus-visible:ring-2 peer-focus-visible:ring-secondary-500/20',
                 'peer-disabled:opacity-50 peer-disabled:cursor-not-allowed',
                 sizeStyles[size],
                 props.disabled ? 'opacity-50 cursor-not-allowed' : '',

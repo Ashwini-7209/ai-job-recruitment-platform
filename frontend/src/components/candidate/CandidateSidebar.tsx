@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SidebarNavItem, SidebarNavGroup, SidebarFooter } from '@/components/layout';
 import { Avatar } from '@/components/ui';
+import { useAuth } from '@/contexts';
 
 const mainNavItems = [
   {
@@ -66,7 +67,7 @@ const mainNavItems = [
       </svg>
     ),
     label: 'Resume',
-    href: '/candidate/applications',
+    href: '/candidate/resume',
   },
 ];
 
@@ -109,12 +110,31 @@ const settingsNavItems = [
   {
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+    label: 'Profile',
+    href: '/candidate/profile',
+  },
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3" />
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
       </svg>
     ),
     label: 'Notifications',
     href: '/candidate/notifications',
+  },
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+      </svg>
+    ),
+    label: 'Change Password',
+    href: '/change-password',
   },
 ];
 
@@ -125,6 +145,7 @@ interface CandidateSidebarProps {
 export default function CandidateSidebar({ onNavigate }: CandidateSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleNav = (href: string) => {
     navigate(href);
@@ -170,10 +191,10 @@ export default function CandidateSidebar({ onNavigate }: CandidateSidebarProps) 
       </SidebarNavGroup>
       <SidebarFooter>
         <div className="flex items-center gap-3">
-          <Avatar size="sm" initials="JD" color="primary" />
+          <Avatar size="sm" initials={user?.fullName?.split(' ').map((n: string) => n[0]).join('').toUpperCase() || 'U'} color="primary" />
           <div className="min-w-0 flex-1 hidden lg:block">
-            <p className="text-sm font-medium text-neutral-900 truncate">Jordan Davis</p>
-            <p className="text-xs text-neutral-500 truncate">jordan.davis@email.com</p>
+            <p className="text-sm font-medium text-neutral-900 truncate">{user?.fullName || 'User'}</p>
+            <p className="text-xs text-neutral-500 truncate">{user?.email || ''}</p>
           </div>
         </div>
       </SidebarFooter>

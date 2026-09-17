@@ -17,4 +17,6 @@ public interface ApplicationNoteRepository extends JpaRepository<ApplicationNote
     List<ApplicationNote> findByApplicationIdAndRecruiterOrderByCreatedAtDesc(Long applicationId, User recruiter);
 
     void deleteByIdAndRecruiter(Long id, User recruiter);
+
+    long countByApplicationId(Long applicationId);
 }

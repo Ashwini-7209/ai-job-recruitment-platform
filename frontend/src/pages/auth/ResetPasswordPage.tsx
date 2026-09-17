@@ -1,8 +1,9 @@
-import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, type FormEvent } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthLayout, PasswordInput, AlertMessage } from '@/components/auth';
 import { Button } from '@/components/ui';
 import { calculatePasswordStrength } from '@/components/auth/PasswordInput';
+import passwordService from '@/services/password.service';
 
 interface Form {
   password: string;
@@ -24,11 +25,23 @@ function validate(data: Form): FormErrors {
 }
 
 export default function ResetPasswordPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+
   const [form, setForm] = useState<Form>({ password: '', confirmPassword: '' });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [tokenError, setTokenError] = useState('');
+
+  useEffect(() => {
+    if (!token) {
+      setTokenError('No reset token found. Please request a new password reset link.');
+    }
+  }, [token]);
 
   const handleChange = (field: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -43,26 +56,44 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setServerError('');
 
+    if (!token) {
+      setTokenError('No reset token found. Please request a new password reset link.');
+      return;
+    }
+
     const newErrors = validate(form);
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
 
     setIsSubmitting(true);
+    setSubmitted(true);
     try {
-      setSubmitted(true);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'An unexpected error occurred';
-      if (message.includes('Not implemented')) {
-        setSubmitted(true);
+      const response = await passwordService.resetPassword({
+        token,
+        newPassword: form.password,
+        confirmPassword: form.confirmPassword,
+      });
+
+      if (response.success) {
+        setSuccessMessage('Password reset successful. Please log in with your new password.');
+        setTimeout(() => navigate('/login'), 2000);
       } else {
-        setServerError('Unable to reset your password. The link may have expired.');
+        setServerError(response.message || 'Unable to reset your password. The link may have expired.');
+      }
+    } catch (err: unknown) {
+      const axiosError = err as { response?: { data?: { message?: string } } };
+      const backendMessage = axiosError?.response?.data?.message;
+      if (backendMessage) {
+        setServerError(backendMessage);
+      } else {
+        setServerError('Unable to connect to the server. Please try again later.');
       }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (submitted) {
+  if (successMessage) {
     return (
       <AuthLayout>
         <div className="space-y-6 text-center">
@@ -74,14 +105,10 @@ export default function ResetPasswordPage() {
           <div>
             <h1 className="text-heading-lg text-neutral-900">Password reset successfully</h1>
             <p className="mt-2 text-body-md text-neutral-500">
-              Your password has been updated. You can now sign in with your new password.
+              {successMessage}
             </p>
           </div>
-          <AlertMessage
-            type="info"
-            message="Password reset is not yet connected to the backend. This is a placeholder confirmation screen."
-          />
-          <Button fullWidth onClick={() => window.location.href = '/login'}>
+          <Button fullWidth onClick={() => navigate('/login')}>
             Sign in
           </Button>
         </div>
@@ -99,16 +126,18 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
+        {tokenError && <AlertMessage type="error" message={tokenError} />}
         {serverError && <AlertMessage type="error" message={serverError} />}
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <PasswordInput
             name="newPassword"
+            label="New password"
             value={form.password}
             onChange={handleChange('password')}
             error={errors.password}
             placeholder="At least 8 characters"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !!tokenError}
             autoComplete="new-password"
             showStrength
             strength={calculatePasswordStrength(form.password)}
@@ -121,17 +150,17 @@ export default function ResetPasswordPage() {
             onChange={handleChange('confirmPassword')}
             error={errors.confirmPassword}
             placeholder="Re-enter your password"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !!tokenError}
             autoComplete="new-password"
           />
 
-          <Button type="submit" fullWidth loading={isSubmitting} disabled={isSubmitting}>
+          <Button type="submit" fullWidth loading={isSubmitting} disabled={isSubmitting || !!tokenError}>
             Reset password
           </Button>
         </form>
 
         <p className="text-center text-body-md text-neutral-500">
-          <Link to="/login" className="font-medium text-primary-600 hover:text-primary-700 transition-colors">
+          <Link to="/login" className="font-medium text-secondary-600 hover:text-secondary-700 transition-colors">
             Back to sign in
           </Link>
         </p>

@@ -202,7 +202,7 @@ export default function RegisterRecruiterPage() {
 
         <p className="text-center text-body-md text-neutral-500">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-primary-600 hover:text-primary-700 transition-colors">
+          <Link to="/login" className="font-medium text-secondary-600 hover:text-secondary-700 transition-colors">
             Sign in
           </Link>
         </p>

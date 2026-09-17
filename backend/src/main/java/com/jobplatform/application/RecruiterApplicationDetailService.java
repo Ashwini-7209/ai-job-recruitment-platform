@@ -81,6 +81,8 @@ public class RecruiterApplicationDetailService {
 
         return RecruiterApplicationDetailResponse.builder()
                 .applicationId(application.getId())
+                .jobId(application.getJob().getId())
+                .jobTitle(application.getJob().getTitle())
                 .status(application.getStatus())
                 .coverLetter(application.getCoverLetter())
                 .appliedAt(application.getAppliedAt())
@@ -144,6 +146,7 @@ public class RecruiterApplicationDetailService {
                     .newStatus(h.getNewStatus())
                     .changedByName(h.getChangedBy().getFullName())
                     .changedAt(h.getChangedAt())
+                    .reason(h.getReason())
                     .build());
         }
         return entries;

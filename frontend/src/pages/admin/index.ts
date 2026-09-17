@@ -1,7 +1,10 @@
 export { default as AdminIndex } from './AdminIndex';
 export { default as AdminDashboardPage } from './AdminDashboardPage';
 export { default as AdminUsersPage } from './AdminUsersPage';
+export { default as AdminUserDetailPage } from './AdminUserDetailPage';
 export { default as AdminJobsPage } from './AdminJobsPage';
+export { default as AdminJobDetailPage } from './AdminJobDetailPage';
 export { default as AdminApplicationsPage } from './AdminApplicationsPage';
 export { default as AdminAuditLogsPage } from './AdminAuditLogsPage';
 export { default as AdminAnalyticsPage } from './AdminAnalyticsPage';
+export { default as AdminSettingsPage } from './AdminSettingsPage';

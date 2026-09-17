@@ -115,7 +115,7 @@ public class ApplicationNoteService {
 
     @Transactional(readOnly = true)
     public long countNotesForApplication(Long applicationId) {
-        return noteRepository.findByApplicationIdOrderByCreatedAtDesc(applicationId).size();
+        return noteRepository.countByApplicationId(applicationId);
     }
 
     private Application findAndVerifyOwnership(Long applicationId, User recruiter) {

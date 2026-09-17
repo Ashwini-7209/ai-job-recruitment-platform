@@ -23,7 +23,7 @@ function Card({
     <div
       className={[
         'rounded-xl bg-white',
-        bordered ? 'ring-1 ring-neutral-200' : '',
+        bordered ? 'border border-neutral-200 shadow-xs' : '',
         paddingStyles[padding],
         className,
       ].join(' ')}
@@ -52,7 +52,7 @@ interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 function CardTitle({ className = '', children, ...props }: CardTitleProps) {
   return (
     <h3
-      className={['text-heading-md text-neutral-900', className].join(' ')}
+      className={['text-heading-md text-primary-900', className].join(' ')}
       {...props}
     >
       {children}

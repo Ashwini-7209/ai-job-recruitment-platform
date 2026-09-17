@@ -16,6 +16,8 @@ import com.jobplatform.job.JobRepository;
 import com.jobplatform.job.enums.JobStatus;
 import com.jobplatform.notification.NotificationService;
 import com.jobplatform.notification.NotificationType;
+import com.jobplatform.recruiter.RecruiterProfile;
+import com.jobplatform.recruiter.RecruiterProfileRepository;
 import com.jobplatform.resume.Resume;
 import com.jobplatform.resume.ResumeService;
 import com.jobplatform.user.User;
@@ -44,18 +46,22 @@ public class ApplicationService {
     private static final Map<ApplicationStatus, List<ApplicationStatus>> VALID_TRANSITIONS = Map.of(
             ApplicationStatus.APPLIED, List.of(ApplicationStatus.UNDER_REVIEW, ApplicationStatus.WITHDRAWN),
             ApplicationStatus.UNDER_REVIEW, List.of(ApplicationStatus.SHORTLISTED, ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN),
-            ApplicationStatus.SHORTLISTED, List.of(ApplicationStatus.HIRED, ApplicationStatus.REJECTED)
+            ApplicationStatus.SHORTLISTED, List.of(ApplicationStatus.INTERVIEW, ApplicationStatus.UNDER_REVIEW, ApplicationStatus.HIRED, ApplicationStatus.REJECTED),
+            ApplicationStatus.INTERVIEW, List.of(ApplicationStatus.HIRED, ApplicationStatus.REJECTED, ApplicationStatus.SHORTLISTED),
+            ApplicationStatus.HIRED, List.of(ApplicationStatus.UNDER_REVIEW)
     );
 
     private final ApplicationRepository applicationRepository;
     private final JobRepository jobRepository;
+    private final RecruiterProfileRepository recruiterProfileRepository;
     private final ResumeService resumeService;
     private final ApplicationStatusHistoryService statusHistoryService;
     private final NotificationService notificationService;
 
-    public ApplicationService(ApplicationRepository applicationRepository, JobRepository jobRepository, ResumeService resumeService, ApplicationStatusHistoryService statusHistoryService, NotificationService notificationService) {
+    public ApplicationService(ApplicationRepository applicationRepository, JobRepository jobRepository, RecruiterProfileRepository recruiterProfileRepository, ResumeService resumeService, ApplicationStatusHistoryService statusHistoryService, NotificationService notificationService) {
         this.applicationRepository = applicationRepository;
         this.jobRepository = jobRepository;
+        this.recruiterProfileRepository = recruiterProfileRepository;
         this.resumeService = resumeService;
         this.statusHistoryService = statusHistoryService;
         this.notificationService = notificationService;
@@ -239,6 +245,7 @@ public class ApplicationService {
                         .newStatus(h.getNewStatus())
                         .changedByName(h.getChangedBy().getFullName())
                         .changedAt(h.getChangedAt())
+                        .reason(h.getReason())
                         .build()).toList())
                 .build();
     }
@@ -345,6 +352,7 @@ public class ApplicationService {
         String statusMessage = switch (newStatus) {
             case UNDER_REVIEW -> "is now under review";
             case SHORTLISTED -> "has been shortlisted";
+            case INTERVIEW -> "has been moved to interview stage";
             case REJECTED -> "has been rejected";
             case HIRED -> "has been accepted - Congratulations!";
             default -> "status has been updated to " + newStatus;
@@ -354,6 +362,42 @@ public class ApplicationService {
                 NotificationType.APPLICATION_STATUS_CHANGED,
                 "Application Status Updated",
                 "Your application for " + application.getJob().getTitle() + " " + statusMessage,
+                saved.getId(),
+                "APPLICATION"
+        );
+
+        return mapToResponse(saved);
+    }
+
+    @Transactional
+    public ApplicationResponse unhireApplication(User recruiter, Long applicationId, String reason) {
+        if (recruiter.getRole() != UserRole.RECRUITER) {
+            throw new BadRequestException("Only recruiters can unhire applications");
+        }
+
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Application", "id", applicationId));
+
+        if (!application.getJob().getRecruiter().getId().equals(recruiter.getId())) {
+            throw new BadRequestException("You do not have permission to modify this application");
+        }
+
+        if (application.getStatus() != ApplicationStatus.HIRED) {
+            throw new BadRequestException("Application is not in HIRED status");
+        }
+
+        ApplicationStatus oldStatus = application.getStatus();
+        application.setStatus(ApplicationStatus.UNDER_REVIEW);
+
+        Application saved = applicationRepository.save(application);
+        statusHistoryService.recordTransition(saved, oldStatus, ApplicationStatus.UNDER_REVIEW, recruiter, reason);
+        log.info("Application unhired: application={} by recruiter={} reason={}", applicationId, recruiter.getEmail(), reason);
+
+        notificationService.createNotification(
+                application.getCandidate(),
+                NotificationType.APPLICATION_STATUS_CHANGED,
+                "Application Status Updated",
+                "Your application for " + application.getJob().getTitle() + " is no longer marked as hired and is now under review again.",
                 saved.getId(),
                 "APPLICATION"
         );
@@ -400,6 +444,7 @@ public class ApplicationService {
     }
 
     private ApplicationResponse mapToResponse(Application application) {
+        String companyName = resolveCompanyName(application.getJob());
         return ApplicationResponse.builder()
                 .id(application.getId())
                 .candidateId(application.getCandidate().getId())
@@ -407,7 +452,7 @@ public class ApplicationService {
                 .candidateEmail(application.getCandidate().getEmail())
                 .jobId(application.getJob().getId())
                 .jobTitle(application.getJob().getTitle())
-                .companyName(null)
+                .companyName(companyName)
                 .status(application.getStatus())
                 .coverLetter(application.getCoverLetter())
                 .submittedResumeId(application.getSubmittedResume() != null ? application.getSubmittedResume().getId() : null)
@@ -419,17 +464,28 @@ public class ApplicationService {
     }
 
     private ApplicationSummaryResponse mapToSummaryResponse(Application application) {
+        String companyName = resolveCompanyName(application.getJob());
         return ApplicationSummaryResponse.builder()
                 .id(application.getId())
                 .jobId(application.getJob().getId())
                 .jobTitle(application.getJob().getTitle())
-                .companyName(null)
+                .companyName(companyName)
                 .candidateName(application.getCandidate().getFullName())
                 .candidateEmail(application.getCandidate().getEmail())
                 .status(application.getStatus())
                 .appliedAt(application.getAppliedAt())
                 .updatedAt(application.getUpdatedAt())
                 .build();
+    }
+
+    private String resolveCompanyName(Job job) {
+        try {
+            return recruiterProfileRepository.findByUserId(job.getRecruiter().getId())
+                    .map(RecruiterProfile::getCompanyName)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private PagedResponse<ApplicationSummaryResponse> mapToSummaryPagedResponse(Page<Application> applications) {

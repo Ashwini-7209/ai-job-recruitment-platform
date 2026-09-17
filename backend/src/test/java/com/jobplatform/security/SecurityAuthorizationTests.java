@@ -390,4 +390,126 @@ class SecurityAuthorizationTests {
         // but the backend should store it as-is
         org.assertj.core.api.Assertions.assertThat(response).contains("script");
     }
+
+    // ========== ADDITIONAL IDOR PROTECTION ==========
+
+    @Test
+    void candidate_cannotAccessRecruiterApplications_returns403() throws Exception {
+        mockMvc.perform(get("/api/recruiters/me/applications")
+                        .header("Authorization", "Bearer " + candidateToken))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void candidate_cannotAccessRecruiterCandidateSearch_returns403() throws Exception {
+        mockMvc.perform(get("/api/recruiters/candidates")
+                        .header("Authorization", "Bearer " + candidateToken))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void recruiter_cannotAccessCandidateApplications_returns403() throws Exception {
+        mockMvc.perform(get("/api/candidates/me/applications")
+                        .header("Authorization", "Bearer " + recruiterToken))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void candidate_cannotMarkRecruiterNotificationsAsRead_returns403() throws Exception {
+        mockMvc.perform(patch("/api/notifications/read-all")
+                        .header("Authorization", "Bearer " + candidateToken))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void candidate_cannotAccessRecruiterJobManagement_returns403() throws Exception {
+        mockMvc.perform(post("/api/recruiter/jobs")
+                        .header("Authorization", "Bearer " + candidateToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createValidJobRequest())))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void recruiter_cannotAccessCandidateProfileUpdate_denied() throws Exception {
+        mockMvc.perform(put("/api/candidates/me/profile")
+                        .header("Authorization", "Bearer " + recruiterToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fullName\": \"Hacked\"}"))
+                .andExpect(result -> {
+                    int status = result.getResponse().getStatus();
+                    org.assertj.core.api.Assertions.assertThat(status).isNotEqualTo(200);
+                });
+    }
+
+    @Test
+    void admin_cannotAccessCandidateResumeUpload_denied() throws Exception {
+        mockMvc.perform(post("/api/candidates/me/resumes")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(result -> {
+                    int status = result.getResponse().getStatus();
+                    org.assertj.core.api.Assertions.assertThat(status).isNotEqualTo(200);
+                });
+    }
+
+    // ========== INPUT VALIDATION SECURITY ==========
+
+    @Test
+    void register_withEmptyEmail_returns400() throws Exception {
+        RegisterRequest request = RegisterRequest.builder()
+                .fullName("Test").email("").password("password123").confirmPassword("password123")
+                .role(UserRole.CANDIDATE).build();
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void register_withShortPassword_returns400() throws Exception {
+        RegisterRequest request = RegisterRequest.builder()
+                .fullName("Test").email("short@example.com").password("ab").confirmPassword("ab")
+                .role(UserRole.CANDIDATE).build();
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void register_withMismatchedPasswords_returns400() throws Exception {
+        RegisterRequest request = RegisterRequest.builder()
+                .fullName("Test").email("mismatch@example.com").password("password123").confirmPassword("different456")
+                .role(UserRole.CANDIDATE).build();
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void login_withEmptyCredentials_returns400() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"\",\"password\":\"\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createJob_withEmptyTitle_returns400() throws Exception {
+        CreateJobRequest request = CreateJobRequest.builder()
+                .title("").description("Description")
+                .employmentType(EmploymentType.FULL_TIME).workplaceType(WorkplaceType.REMOTE)
+                .build();
+
+        mockMvc.perform(post("/api/recruiter/jobs")
+                        .header("Authorization", "Bearer " + recruiterToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
 }

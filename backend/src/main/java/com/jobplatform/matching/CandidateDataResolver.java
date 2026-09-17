@@ -11,6 +11,7 @@ import com.jobplatform.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +35,11 @@ public class CandidateDataResolver {
         this.resumeProfileDataRepository = resumeProfileDataRepository;
     }
 
+    @Transactional(readOnly = true)
     public CandidateData resolve(User candidate) {
         List<String> allSkills = new ArrayList<>();
+        List<String> techFromExperience = new ArrayList<>();
+        List<String> techFromProjects = new ArrayList<>();
         Integer yearsOfExperience = null;
         String headline = null;
         String bio = null;
@@ -73,7 +77,6 @@ public class CandidateDataResolver {
                         yearsOfExperience = resumeData.getTotalYearsOfExperience();
                     }
 
-                    List<String> techFromExperience = new ArrayList<>();
                     if (resumeData.getExperiences() != null) {
                         for (var exp : resumeData.getExperiences()) {
                             if (exp.getTechnologies() != null) {
@@ -82,7 +85,6 @@ public class CandidateDataResolver {
                         }
                     }
 
-                    List<String> techFromProjects = new ArrayList<>();
                     if (resumeData.getProjects() != null) {
                         for (var proj : resumeData.getProjects()) {
                             if (proj.getTechnologies() != null) {
@@ -95,11 +97,7 @@ public class CandidateDataResolver {
                         professionalSummary = resumeData.getProfessionalSummary();
                     }
 
-                    if (allSkills.isEmpty()) {
-                        allSkills.addAll(resumeSkills);
-                    } else {
-                        allSkills.addAll(resumeSkills);
-                    }
+                    allSkills.addAll(resumeSkills);
                 }
             }
         }
@@ -113,6 +111,8 @@ public class CandidateDataResolver {
                 .skills(allSkills)
                 .yearsOfExperience(yearsOfExperience)
                 .professionalSummary(professionalSummary)
+                .experienceTechnologies(techFromExperience)
+                .projectTechnologies(techFromProjects)
                 .resumeDataAvailable(hasResume)
                 .profileDataAvailable(hasProfile)
                 .build();

@@ -6,6 +6,7 @@ import com.jobplatform.common.PagedResponse;
 import com.jobplatform.notification.dto.NotificationResponse;
 import com.jobplatform.user.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<ApiResponse<PagedResponse<NotificationResponse>>> getNotifications(
             @RequestParam(defaultValue = "0") int page,
@@ -32,6 +34,7 @@ public class NotificationController {
         return ResponseEntity.ok(ApiResponse.success(notifications));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/unread-count")
     public ResponseEntity<ApiResponse<Long>> getUnreadCount() {
         User user = CurrentUserUtil.getCurrentUser();
@@ -39,6 +42,7 @@ public class NotificationController {
         return ResponseEntity.ok(ApiResponse.success(count));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/{id}/read")
     public ResponseEntity<ApiResponse<Void>> markAsRead(@PathVariable Long id) {
         User user = CurrentUserUtil.getCurrentUser();
@@ -46,6 +50,7 @@ public class NotificationController {
         return ResponseEntity.ok(ApiResponse.success("Notification marked as read", null));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/read-all")
     public ResponseEntity<ApiResponse<Void>> markAllAsRead() {
         User user = CurrentUserUtil.getCurrentUser();

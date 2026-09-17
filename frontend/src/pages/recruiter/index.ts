@@ -1,4 +1,11 @@
 export { default as RecruiterIndex } from './RecruiterIndex';
 export { default as RecruiterDashboardPage } from './RecruiterDashboardPage';
+export { default as RecruiterProfilePage } from './RecruiterProfilePage';
+export { default as RecruiterJobsPage } from './RecruiterJobsPage';
+export { default as RecruiterJobCreatePage } from './RecruiterJobCreatePage';
+export { default as RecruiterJobDetailPage } from './RecruiterJobDetailPage';
+export { default as RecruiterApplicationsPage } from './RecruiterApplicationsPage';
+export { default as RecruiterApplicationDetailPage } from './RecruiterApplicationDetailPage';
+export { default as RecruiterCandidateSearchPage } from './RecruiterCandidateSearchPage';
 export { default as RecruiterInterviewsPage } from './RecruiterInterviewsPage';
 export { default as RecruiterAnalyticsPage } from './RecruiterAnalyticsPage';

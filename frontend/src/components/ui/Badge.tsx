@@ -1,6 +1,6 @@
 import { type HTMLAttributes } from 'react';
 
-type BadgeVariant = 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'accent';
+type BadgeVariant = 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
 type BadgeSize = 'sm' | 'md' | 'lg';
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
@@ -11,24 +11,22 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 
 const variantStyles: Record<BadgeVariant, string> = {
   default: 'bg-neutral-100 text-neutral-700',
-  primary: 'bg-primary-50 text-primary-700',
+  primary: 'bg-secondary-50 text-secondary-700',
   secondary: 'bg-secondary-50 text-secondary-700',
   success: 'bg-success-50 text-success-700',
   warning: 'bg-warning-50 text-warning-700',
   error: 'bg-error-50 text-error-700',
   info: 'bg-info-50 text-info-700',
-  accent: 'bg-accent-50 text-accent-700',
 };
 
 const dotColors: Record<BadgeVariant, string> = {
   default: 'bg-neutral-500',
-  primary: 'bg-primary-500',
+  primary: 'bg-secondary-500',
   secondary: 'bg-secondary-500',
   success: 'bg-success-500',
   warning: 'bg-warning-500',
   error: 'bg-error-500',
   info: 'bg-info-500',
-  accent: 'bg-accent-500',
 };
 
 const sizeStyles: Record<BadgeSize, string> = {

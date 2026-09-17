@@ -31,7 +31,9 @@ const statusLabels: Record<string, string> = {
 };
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '-';
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function formatTime(dateStr: string): string {
@@ -124,13 +126,13 @@ export default function CandidateInterviewsPage() {
                 {upcomingInterviews.map((interview) => (
                   <div
                     key={interview.interviewId}
-                    className="rounded-lg border border-neutral-200 p-4 hover:border-primary-200 hover:shadow-sm transition-all cursor-pointer"
+                    className="rounded-lg border border-neutral-200 p-4 hover:border-secondary-200 hover:shadow-sm transition-all cursor-pointer"
                     onClick={() => setSelectedInterview(interview)}
                   >
                     <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary-50 text-secondary-600">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d={typeIcons[interview.interviewType]} />
+                          <path d={typeIcons[interview.interviewType] || typeIcons.VIDEO} />
                         </svg>
                       </div>
                       <div className="min-w-0 flex-1">
@@ -152,7 +154,7 @@ export default function CandidateInterviewsPage() {
                             href={interview.meetingLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 mt-2 text-body-sm font-medium text-primary-600 hover:text-primary-700"
+                            className="inline-flex items-center gap-1 mt-2 text-body-sm font-medium text-secondary-600 hover:text-secondary-700"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -187,7 +189,7 @@ export default function CandidateInterviewsPage() {
                     <div className="flex items-start gap-3">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-400">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d={typeIcons[interview.interviewType]} />
+                          <path d={typeIcons[interview.interviewType] || typeIcons.VIDEO} />
                         </svg>
                       </div>
                       <div className="min-w-0 flex-1">
@@ -259,7 +261,7 @@ export default function CandidateInterviewsPage() {
                   href={selectedInterview.meetingLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-3 rounded-lg border border-primary-200 bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors"
+                  className="flex items-center gap-2 p-3 rounded-lg border border-secondary-200 bg-secondary-50 text-secondary-700 hover:bg-secondary-100 transition-colors"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />

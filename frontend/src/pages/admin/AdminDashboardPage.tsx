@@ -77,7 +77,7 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[var(--content-max-width)] mx-auto space-y-6">
       <h1 className="text-heading-lg text-neutral-900">Admin Dashboard</h1>
 
       <section>
@@ -107,8 +107,8 @@ export default function AdminDashboardPage() {
           {quickActions.map((action) => (
             <Card key={action.label} padding="md" className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(action.href)}>
               <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-primary-50">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-primary-600" strokeLinecap="round" strokeLinejoin="round">
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-secondary-50">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-secondary-600" strokeLinecap="round" strokeLinejoin="round">
                     <path d={action.icon} />
                   </svg>
                 </div>

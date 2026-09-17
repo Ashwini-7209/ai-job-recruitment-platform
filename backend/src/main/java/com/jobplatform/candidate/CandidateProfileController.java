@@ -2,6 +2,7 @@ package com.jobplatform.candidate;
 
 import com.jobplatform.candidate.dto.CandidateProfileResponse;
 import com.jobplatform.candidate.dto.CandidateProfileUpdateRequest;
+import com.jobplatform.candidate.dto.ProfileCompletionResponse;
 import com.jobplatform.common.ApiResponse;
 import com.jobplatform.common.CurrentUserUtil;
 import com.jobplatform.user.User;
@@ -38,5 +39,12 @@ public class CandidateProfileController {
         User user = CurrentUserUtil.getCurrentUser();
         CandidateProfileResponse response = candidateProfileService.updateProfile(user.getId(), request);
         return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", response));
+    }
+
+    @GetMapping("/completion")
+    public ResponseEntity<ApiResponse<ProfileCompletionResponse>> getProfileCompletion() {
+        User user = CurrentUserUtil.getCurrentUser();
+        ProfileCompletionResponse response = candidateProfileService.getProfileCompletion(user);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

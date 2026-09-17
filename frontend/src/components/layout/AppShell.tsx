@@ -13,7 +13,7 @@ interface AppShellProps {
 function MobileOverlay({ onClick }: { onClick: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-[var(--z-modal-backdrop)] bg-black/30 lg:hidden"
+      className="fixed inset-0 z-[var(--z-modal-backdrop)] bg-primary-900/30 backdrop-blur-sm lg:hidden"
       onClick={onClick}
       aria-hidden="true"
     />
@@ -41,13 +41,13 @@ function SidebarMobile({ children, onClose }: { children: ReactNode; onClose: ()
       <MobileOverlay onClick={onClose} />
       <div
         ref={ref}
-        className="fixed inset-y-0 left-0 z-[var(--z-modal)] flex w-[var(--sidebar-width)] flex-col bg-white shadow-lg lg:hidden"
+        className="fixed inset-y-0 left-0 z-[var(--z-modal)] flex w-[var(--sidebar-width)] flex-col bg-white shadow-xl lg:hidden"
         role="dialog"
         aria-modal="true"
         aria-label="Sidebar"
       >
-        <div className="flex items-center justify-between px-3 py-3 border-b border-neutral-100">
-          <SidebarBrand title="JobRecruit" subtitle="AI Recruitment" />
+        <div className="flex items-center justify-between px-4 py-4 border-b border-neutral-200">
+          <SidebarBrand title="HireFlow" subtitle="AI Recruitment" />
           <IconButton onClick={onClose} aria-label="Close sidebar">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -79,9 +79,9 @@ function AppShell({ sidebar, topBar, children }: AppShellProps) {
         aria-label="Sidebar"
       >
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between border-b border-neutral-100">
+          <div className="flex items-center justify-between border-b border-neutral-200">
             <SidebarBrand
-              title="JobRecruit"
+              title="HireFlow"
               subtitle={isOpen ? 'AI Recruitment' : undefined}
               collapsed={!isOpen}
             />

@@ -7,7 +7,7 @@ interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
   alt?: string;
   size?: AvatarSize;
   initials?: string;
-  color?: 'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error';
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
 }
 
 const sizeStyles: Record<AvatarSize, string> = {
@@ -19,9 +19,8 @@ const sizeStyles: Record<AvatarSize, string> = {
 };
 
 const colorStyles: Record<string, string> = {
-  primary: 'bg-primary-100 text-primary-700',
+  primary: 'bg-secondary-100 text-secondary-700',
   secondary: 'bg-secondary-100 text-secondary-700',
-  accent: 'bg-accent-100 text-accent-700',
   success: 'bg-success-100 text-success-700',
   warning: 'bg-warning-100 text-warning-700',
   error: 'bg-error-100 text-error-700',

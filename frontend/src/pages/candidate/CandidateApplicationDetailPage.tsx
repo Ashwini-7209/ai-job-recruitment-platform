@@ -8,6 +8,7 @@ const statusBadgeVariant: Record<string, 'info' | 'warning' | 'success' | 'error
   APPLIED: 'info',
   UNDER_REVIEW: 'warning',
   SHORTLISTED: 'success',
+  INTERVIEW: 'info',
   REJECTED: 'error',
   HIRED: 'primary',
   WITHDRAWN: 'default',
@@ -17,6 +18,7 @@ const statusLabels: Record<string, string> = {
   APPLIED: 'Applied',
   UNDER_REVIEW: 'Under Review',
   SHORTLISTED: 'Shortlisted',
+  INTERVIEW: 'Interview',
   REJECTED: 'Rejected',
   HIRED: 'Hired',
   WITHDRAWN: 'Withdrawn',
@@ -26,6 +28,7 @@ const statusIcons: Record<string, string> = {
   APPLIED: 'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z',
   UNDER_REVIEW: 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z',
   SHORTLISTED: 'M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z',
+  INTERVIEW: 'M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z',
   REJECTED: 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636',
   HIRED: 'M4.5 12.75l6 6 9-13.5',
   WITHDRAWN: 'M6 18L18 6M6 6l12 12',
@@ -42,6 +45,7 @@ function formatDateTime(dateStr: string): string {
 }
 
 function formatEmploymentType(type: string): string {
+  if (!type) return '';
   return type.replace('_', ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
 }
 
@@ -60,7 +64,7 @@ function StatusTimeline({ history, currentStatus }: { history: StatusHistoryEntr
         <div key={entry.id} className="flex gap-3">
           <div className="flex flex-col items-center">
             <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-              index === displaySteps.length - 1 ? 'bg-primary-100 text-primary-600' : 'bg-neutral-100 text-neutral-400'
+              index === displaySteps.length - 1 ? 'bg-secondary-100 text-secondary-600' : 'bg-neutral-100 text-neutral-400'
             }`}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d={statusIcons[entry.newStatus] || statusIcons.APPLIED} />
@@ -84,12 +88,17 @@ function StatusTimeline({ history, currentStatus }: { history: StatusHistoryEntr
                 {entry.changedByName} &middot; {formatDateTime(entry.changedAt)}
               </p>
             )}
+            {entry.reason && (
+              <p className="text-caption text-neutral-500 mt-1 italic">
+                Reason: {entry.reason}
+              </p>
+            )}
           </div>
         </div>
       ))}
       {displaySteps.length === 0 && (
         <div className="flex gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-600">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d={statusIcons[currentStatus] || statusIcons.APPLIED} />
             </svg>
@@ -296,7 +305,7 @@ export default function CandidateApplicationDetailPage() {
               <CardContent className="p-5 space-y-3">
                 <h4 className="text-label-lg text-neutral-700">Submitted Resume</h4>
                 <div className="flex items-center gap-3 rounded-lg border border-neutral-200 p-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary-50 text-secondary-600">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                     </svg>

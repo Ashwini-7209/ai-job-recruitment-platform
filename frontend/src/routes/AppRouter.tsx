@@ -16,10 +16,14 @@ const RegisterCandidatePage = lazy(() => import('@/pages/auth/RegisterCandidateP
 const RegisterRecruiterPage = lazy(() => import('@/pages/auth/RegisterRecruiterPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
+const ChangePasswordPage = lazy(() => import('@/pages/auth/ChangePasswordPage'));
 
 const CandidateIndex = lazy(() => import('@/pages/candidate/CandidateIndex'));
 const CandidateDashboardPage = lazy(() => import('@/pages/candidate/CandidateDashboardPage'));
+const CandidateProfilePage = lazy(() => import('@/pages/candidate/CandidateProfilePage'));
+const CandidateResumePage = lazy(() => import('@/pages/candidate/CandidateResumePage'));
 const CandidateJobSearchPage = lazy(() => import('@/pages/candidate/CandidateJobSearchPage'));
+const CandidateJobDetailPage = lazy(() => import('@/pages/candidate/CandidateJobDetailPage'));
 const CandidateApplicationsPage = lazy(() => import('@/pages/candidate/CandidateApplicationsPage'));
 const CandidateApplicationDetailPage = lazy(() => import('@/pages/candidate/CandidateApplicationDetailPage'));
 const CandidateInterviewsPage = lazy(() => import('@/pages/candidate/CandidateInterviewsPage'));
@@ -32,8 +36,15 @@ const SkillGapPage = lazy(() => import('@/pages/candidate/SkillGapPage'));
 
 const RecruiterIndex = lazy(() => import('@/pages/recruiter/RecruiterIndex'));
 const RecruiterDashboardPage = lazy(() => import('@/pages/recruiter/RecruiterDashboardPage'));
+const RecruiterProfilePage = lazy(() => import('@/pages/recruiter/RecruiterProfilePage'));
+const RecruiterJobsPage = lazy(() => import('@/pages/recruiter/RecruiterJobsPage'));
+const RecruiterJobCreatePage = lazy(() => import('@/pages/recruiter/RecruiterJobCreatePage'));
+const RecruiterJobDetailPage = lazy(() => import('@/pages/recruiter/RecruiterJobDetailPage'));
+const RecruiterApplicationsPage = lazy(() => import('@/pages/recruiter/RecruiterApplicationsPage'));
+const RecruiterApplicationDetailPage = lazy(() => import('@/pages/recruiter/RecruiterApplicationDetailPage'));
 const RecruiterInterviewsPage = lazy(() => import('@/pages/recruiter/RecruiterInterviewsPage'));
 const RecruiterAnalyticsPage = lazy(() => import('@/pages/recruiter/RecruiterAnalyticsPage'));
+const RecruiterCandidateSearchPage = lazy(() => import('@/pages/recruiter/RecruiterCandidateSearchPage'));
 
 const AdminIndex = lazy(() => import('@/pages/admin/AdminIndex'));
 const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'));
@@ -42,13 +53,16 @@ const AdminJobsPage = lazy(() => import('@/pages/admin/AdminJobsPage'));
 const AdminApplicationsPage = lazy(() => import('@/pages/admin/AdminApplicationsPage'));
 const AdminAuditLogsPage = lazy(() => import('@/pages/admin/AdminAuditLogsPage'));
 const AdminAnalyticsPage = lazy(() => import('@/pages/admin/AdminAnalyticsPage'));
+const AdminUserDetailPage = lazy(() => import('@/pages/admin/AdminUserDetailPage'));
+const AdminJobDetailPage = lazy(() => import('@/pages/admin/AdminJobDetailPage'));
+const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
 
 function SuspenseWrapper({ children }: { children: React.ReactNode }) {
   return (
     <Suspense
       fallback={
         <div className="flex h-screen items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600" />
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary-200 border-t-secondary-600" />
         </div>
       }
     >
@@ -69,7 +83,7 @@ function ProtectedRoute({
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary-200 border-t-secondary-600" />
       </div>
     );
   }
@@ -96,7 +110,7 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary-200 border-t-secondary-600" />
       </div>
     );
   }
@@ -159,6 +173,14 @@ const router = createBrowserRouter([
     element: <SuspenseWrapper><ResetPasswordPage /></SuspenseWrapper>,
   },
   {
+    path: '/change-password',
+    element: (
+      <ProtectedRoute allowedRoles={['CANDIDATE', 'RECRUITER', 'ADMIN']}>
+        <SuspenseWrapper><ChangePasswordPage /></SuspenseWrapper>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: '/notifications',
     element: (
       <ProtectedRoute allowedRoles={['CANDIDATE', 'RECRUITER', 'ADMIN']}>
@@ -178,7 +200,10 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <SuspenseWrapper><CandidateIndex /></SuspenseWrapper> },
       { path: 'dashboard', element: <SuspenseWrapper><CandidateDashboardPage /></SuspenseWrapper> },
+      { path: 'profile', element: <SuspenseWrapper><CandidateProfilePage /></SuspenseWrapper> },
+      { path: 'resume', element: <SuspenseWrapper><CandidateResumePage /></SuspenseWrapper> },
       { path: 'jobs', element: <SuspenseWrapper><CandidateJobSearchPage /></SuspenseWrapper> },
+      { path: 'jobs/:jobId', element: <SuspenseWrapper><CandidateJobDetailPage /></SuspenseWrapper> },
       { path: 'saved', element: <SuspenseWrapper><SavedJobsPage /></SuspenseWrapper> },
       { path: 'applications', element: <SuspenseWrapper><CandidateApplicationsPage /></SuspenseWrapper> },
       { path: 'applications/:applicationId', element: <SuspenseWrapper><CandidateApplicationDetailPage /></SuspenseWrapper> },
@@ -202,6 +227,13 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <SuspenseWrapper><RecruiterIndex /></SuspenseWrapper> },
       { path: 'dashboard', element: <SuspenseWrapper><RecruiterDashboardPage /></SuspenseWrapper> },
+      { path: 'profile', element: <SuspenseWrapper><RecruiterProfilePage /></SuspenseWrapper> },
+      { path: 'jobs', element: <SuspenseWrapper><RecruiterJobsPage /></SuspenseWrapper> },
+      { path: 'jobs/new', element: <SuspenseWrapper><RecruiterJobCreatePage /></SuspenseWrapper> },
+      { path: 'jobs/:jobId', element: <SuspenseWrapper><RecruiterJobDetailPage /></SuspenseWrapper> },
+      { path: 'applications', element: <SuspenseWrapper><RecruiterApplicationsPage /></SuspenseWrapper> },
+      { path: 'applications/:applicationId', element: <SuspenseWrapper><RecruiterApplicationDetailPage /></SuspenseWrapper> },
+      { path: 'candidates', element: <SuspenseWrapper><RecruiterCandidateSearchPage /></SuspenseWrapper> },
       { path: 'interviews', element: <SuspenseWrapper><RecruiterInterviewsPage /></SuspenseWrapper> },
       { path: 'analytics', element: <SuspenseWrapper><RecruiterAnalyticsPage /></SuspenseWrapper> },
     ],
@@ -219,10 +251,13 @@ const router = createBrowserRouter([
       { index: true, element: <SuspenseWrapper><AdminIndex /></SuspenseWrapper> },
       { path: 'dashboard', element: <SuspenseWrapper><AdminDashboardPage /></SuspenseWrapper> },
       { path: 'users', element: <SuspenseWrapper><AdminUsersPage /></SuspenseWrapper> },
+      { path: 'users/:userId', element: <SuspenseWrapper><AdminUserDetailPage /></SuspenseWrapper> },
       { path: 'jobs', element: <SuspenseWrapper><AdminJobsPage /></SuspenseWrapper> },
+      { path: 'jobs/:jobId', element: <SuspenseWrapper><AdminJobDetailPage /></SuspenseWrapper> },
       { path: 'applications', element: <SuspenseWrapper><AdminApplicationsPage /></SuspenseWrapper> },
       { path: 'logs', element: <SuspenseWrapper><AdminAuditLogsPage /></SuspenseWrapper> },
       { path: 'analytics', element: <SuspenseWrapper><AdminAnalyticsPage /></SuspenseWrapper> },
+      { path: 'settings', element: <SuspenseWrapper><AdminSettingsPage /></SuspenseWrapper> },
     ],
   },
   {

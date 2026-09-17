@@ -77,7 +77,7 @@ export default function RecruiterSection() {
             {recruiterFeatures.map((feature) => (
               <Card key={feature.title} padding="md" className="hover:shadow-sm transition-shadow duration-200">
                 <CardContent className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary-50 text-secondary-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary-50 text-secondary-700">
                     {feature.icon}
                   </div>
                   <div>
@@ -99,14 +99,14 @@ export default function RecruiterSection() {
               JobRecruit streamlines your entire hiring pipeline. From posting roles to onboarding new hires,
               every step is optimized with AI and designed for collaboration.
             </p>
-            <div className="mt-8 flex gap-3">
-              <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-secondary-600 text-white text-sm font-medium hover:bg-secondary-700 transition-colors">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
+              <button className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-secondary-500 text-white text-sm font-medium hover:bg-secondary-600 transition-colors">
                 Start Hiring
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-neutral-700 text-sm font-medium ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 transition-colors">
+              <button className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-white text-neutral-700 text-sm font-medium ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 transition-colors">
                 View Pricing
               </button>
             </div>

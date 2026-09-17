@@ -7,11 +7,16 @@ import com.jobplatform.application.dto.ApplicationStats;
 import com.jobplatform.application.dto.ApplicationSummaryResponse;
 import com.jobplatform.application.dto.RecruiterAggregateStatsResponse;
 import com.jobplatform.application.dto.RecruiterApplicationDetailResponse;
+import com.jobplatform.application.dto.UnhireApplicationRequest;
 import com.jobplatform.application.dto.UpdateApplicationStatusRequest;
 import com.jobplatform.application.enums.ApplicationStatus;
 import com.jobplatform.common.ApiResponse;
 import com.jobplatform.common.CurrentUserUtil;
 import com.jobplatform.common.PagedResponse;
+import com.jobplatform.exception.BadRequestException;
+import com.jobplatform.exception.ResourceNotFoundException;
+import com.jobplatform.matching.JobMatchingService;
+import com.jobplatform.matching.dto.JobMatchResponse;
 import com.jobplatform.user.User;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @RestController
@@ -38,14 +44,20 @@ public class RecruiterApplicationController {
     private final ApplicationService applicationService;
     private final ApplicationNoteService noteService;
     private final RecruiterApplicationDetailService detailService;
+    private final ApplicationRepository applicationRepository;
+    private final JobMatchingService jobMatchingService;
 
     public RecruiterApplicationController(
             ApplicationService applicationService,
             ApplicationNoteService noteService,
-            RecruiterApplicationDetailService detailService) {
+            RecruiterApplicationDetailService detailService,
+            ApplicationRepository applicationRepository,
+            JobMatchingService jobMatchingService) {
         this.applicationService = applicationService;
         this.noteService = noteService;
         this.detailService = detailService;
+        this.applicationRepository = applicationRepository;
+        this.jobMatchingService = jobMatchingService;
     }
 
     @GetMapping("/applications")
@@ -97,6 +109,31 @@ public class RecruiterApplicationController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @GetMapping("/applications/{applicationId}/match")
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse<JobMatchResponse>> getCandidateMatch(
+            @PathVariable Long applicationId) {
+        User recruiter = CurrentUserUtil.getCurrentUser();
+
+        Application application = applicationRepository.findByIdWithJobAndResume(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Application", "id", applicationId));
+
+        if (!application.getJob().getRecruiter().getId().equals(recruiter.getId())) {
+            throw new BadRequestException("You do not have permission to view this application");
+        }
+
+        try {
+            JobMatchingService.JobMatchResult result =
+                    jobMatchingService.calculateMatch(application.getCandidate(), application.getJob());
+            return ResponseEntity.ok(ApiResponse.success("Match calculated",
+                    JobMatchResponse.from(result)));
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(RecruiterApplicationController.class)
+                    .warn("Match calculation failed for application {}: {}", applicationId, e.getMessage());
+            throw new BadRequestException("Unable to calculate match score. Please try again.");
+        }
+    }
+
     @PatchMapping("/applications/{applicationId}/status")
     public ResponseEntity<ApiResponse<ApplicationResponse>> updateApplicationStatus(
             @PathVariable Long applicationId,
@@ -104,6 +141,15 @@ public class RecruiterApplicationController {
         User recruiter = CurrentUserUtil.getCurrentUser();
         ApplicationResponse response = applicationService.updateApplicationStatus(recruiter, applicationId, request.getStatus());
         return ResponseEntity.ok(ApiResponse.success("Application status updated successfully", response));
+    }
+
+    @PatchMapping("/applications/{applicationId}/unhire")
+    public ResponseEntity<ApiResponse<ApplicationResponse>> unhireApplication(
+            @PathVariable Long applicationId,
+            @Valid @RequestBody UnhireApplicationRequest request) {
+        User recruiter = CurrentUserUtil.getCurrentUser();
+        ApplicationResponse response = applicationService.unhireApplication(recruiter, applicationId, request.getReason());
+        return ResponseEntity.ok(ApiResponse.success("Application reopened successfully", response));
     }
 
     @GetMapping("/application-stats")
@@ -147,6 +193,6 @@ public class RecruiterApplicationController {
             @PathVariable Long noteId) {
         User recruiter = CurrentUserUtil.getCurrentUser();
         noteService.deleteNote(recruiter, applicationId, noteId);
-        return ResponseEntity.ok(ApiResponse.success("Note deleted successfully", null));
+        return ResponseEntity.noContent().build();
     }
 }

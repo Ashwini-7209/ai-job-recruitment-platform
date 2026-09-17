@@ -84,9 +84,9 @@ const aiFeatures = [
 ];
 
 const colorStyles: Record<string, { bg: string; text: string }> = {
-  primary: { bg: 'bg-primary-50', text: 'text-primary-600' },
-  secondary: { bg: 'bg-secondary-50', text: 'text-secondary-600' },
-  accent: { bg: 'bg-accent-50', text: 'text-accent-600' },
+  primary: { bg: 'bg-secondary-50', text: 'text-secondary-600' },
+  secondary: { bg: 'bg-secondary-50', text: 'text-secondary-500' },
+  accent: { bg: 'bg-secondary-50', text: 'text-secondary-500' },
   success: { bg: 'bg-success-50', text: 'text-success-600' },
   warning: { bg: 'bg-warning-50', text: 'text-warning-600' },
   info: { bg: 'bg-info-50', text: 'text-info-600' },
@@ -97,7 +97,7 @@ export default function AISection() {
     <section className="py-16 sm:py-20 bg-neutral-950 text-white" id="ai">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <Badge variant="accent" size="md" className="mb-4 bg-white/10 text-white border-white/20">
+          <Badge variant="secondary" size="md" className="mb-4 bg-secondary-600/20 text-secondary-200 border-secondary-500/30">
             Powered by AI
           </Badge>
           <h2 className="text-display-sm text-white">

@@ -261,7 +261,7 @@ export default function DesignSystemPage() {
                   <Badge variant="warning">Warning</Badge>
                   <Badge variant="error">Error</Badge>
                   <Badge variant="info">Info</Badge>
-                  <Badge variant="accent">Accent</Badge>
+                  <Badge variant="secondary">Accent</Badge>
                 </div>
               </div>
               <Divider />
@@ -354,7 +354,7 @@ export default function DesignSystemPage() {
             <div className="flex flex-wrap items-center gap-4">
               <Avatar size="xs" initials="XS" />
               <Avatar size="sm" initials="SM" color="secondary" />
-              <Avatar size="md" initials="MD" color="accent" />
+              <Avatar size="md" initials="MD" color="secondary" />
               <Avatar size="lg" initials="LG" color="success" />
               <Avatar size="xl" initials="XL" color="warning" />
               <Avatar size="md" initials="ER" color="error" />

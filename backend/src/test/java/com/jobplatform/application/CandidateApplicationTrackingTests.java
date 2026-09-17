@@ -289,7 +289,7 @@ class CandidateApplicationTrackingTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.jobId").value(jobId))
                 .andExpect(jsonPath("$.data.jobDescription").value("We are looking for a software engineer"))
-                .andExpect(jsonPath("$.data.skills").isEmpty());
+                .andExpect(jsonPath("$.data.skills").doesNotExist());
     }
 
     // Test 16: Status history recorded on status change

@@ -65,7 +65,7 @@ export default function CandidateSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {/* Left - Content */}
           <div className="lg:sticky lg:top-24">
-            <p className="text-overline text-primary-600 mb-3">For Candidates</p>
+            <p className="text-overline text-secondary-500 mb-3">For Candidates</p>
             <h2 className="text-display-sm text-neutral-900">
               Advance your career with intelligent tools
             </h2>
@@ -73,14 +73,14 @@ export default function CandidateSection() {
               JobRecruit gives you everything you need to find the right role, present yourself effectively,
               and continuously improve as a candidate.
             </p>
-            <div className="mt-8 flex gap-3">
-              <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
+              <button className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-secondary-500 text-white text-sm font-medium hover:bg-secondary-600 transition-colors">
                 Create Your Profile
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-neutral-700 text-sm font-medium ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 transition-colors">
+              <button className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-white text-neutral-700 text-sm font-medium ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 transition-colors">
                 Learn More
               </button>
             </div>
@@ -91,7 +91,7 @@ export default function CandidateSection() {
             {candidateFeatures.map((feature) => (
               <Card key={feature.title} padding="md" className="hover:shadow-sm transition-shadow duration-200">
                 <CardContent className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary-50 text-secondary-700">
                     {feature.icon}
                   </div>
                   <div>

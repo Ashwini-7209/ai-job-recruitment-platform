@@ -63,10 +63,10 @@ export default function SkillGapPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {gap.matchedSkills.map((s, i) => (
+                  {(gap.matchedSkills || []).map((s, i) => (
                     <Badge key={i} variant="success">{s}</Badge>
                   ))}
-                  {gap.matchedSkills.length === 0 && (
+                  {(gap.matchedSkills || []).length === 0 && (
                     <p className="text-sm text-gray-500">No matched skills yet</p>
                   )}
                 </div>
@@ -79,10 +79,10 @@ export default function SkillGapPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {gap.missingSkills.map((s, i) => (
+                  {(gap.missingSkills || []).map((s, i) => (
                     <Badge key={i} variant="error">{s}</Badge>
                   ))}
-                  {gap.missingSkills.length === 0 && (
+                  {(gap.missingSkills || []).length === 0 && (
                     <p className="text-sm text-gray-500">No missing skills</p>
                   )}
                 </div>
@@ -95,10 +95,10 @@ export default function SkillGapPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {gap.partiallyMatchedSkills.map((s, i) => (
+                  {(gap.partiallyMatchedSkills || []).map((s, i) => (
                     <Badge key={i} variant="warning">{s}</Badge>
                   ))}
-                  {gap.partiallyMatchedSkills.length === 0 && (
+                  {(gap.partiallyMatchedSkills || []).length === 0 && (
                     <p className="text-sm text-gray-500">None</p>
                   )}
                 </div>
@@ -114,14 +114,14 @@ export default function SkillGapPage() {
             </Card>
           )}
 
-          {gap.prioritySuggestions.length > 0 && (
+          {(gap.prioritySuggestions || []).length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle>Priority Suggestions</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {gap.prioritySuggestions.map((s, i) => (
+                  {(gap.prioritySuggestions || []).map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
                       <span className="text-blue-500 mt-1">•</span>
                       {s}
@@ -138,8 +138,8 @@ export default function SkillGapPage() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {gap.jobRequiredSkills.map((s, i) => (
-                  <Badge key={i} variant={gap.matchedSkills.includes(s) ? 'success' : 'default'}>
+                {(gap.jobRequiredSkills || []).map((s, i) => (
+                  <Badge key={i} variant={(gap.matchedSkills || []).includes(s) ? 'success' : 'default'}>
                     {s}
                   </Badge>
                 ))}

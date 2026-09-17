@@ -132,7 +132,7 @@ export default function LoginPage() {
           <div className="flex items-center justify-end">
             <Link
               to="/forgot-password"
-              className="text-body-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
+              className="text-body-sm font-medium text-secondary-600 hover:text-secondary-700 transition-colors"
             >
               Forgot password?
             </Link>
@@ -150,7 +150,7 @@ export default function LoginPage() {
 
         <p className="text-center text-body-md text-neutral-500">
           Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-primary-600 hover:text-primary-700 transition-colors">
+          <Link to="/register" className="font-medium text-secondary-600 hover:text-secondary-700 transition-colors">
             Get started
           </Link>
         </p>

@@ -221,6 +221,20 @@ public class ResumeService {
         return fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
     }
 
+    public String sanitizeHeaderFileName(String fileName) {
+        if (fileName == null) {
+            return "download";
+        }
+        String sanitized = fileName
+                .replaceAll("[\\p{Cc}\"]", "")
+                .replaceAll("[^a-zA-Z0-9._\\- ]", "_")
+                .trim();
+        if (sanitized.isEmpty()) {
+            return "download";
+        }
+        return sanitized.length() > 200 ? sanitized.substring(0, 200) : sanitized;
+    }
+
     private String sanitizeFileName(String fileName) {
         if (fileName == null) {
             return "resume";

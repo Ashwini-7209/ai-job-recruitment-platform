@@ -3,8 +3,10 @@ package com.jobplatform.ai;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,7 +21,7 @@ public class AIUsageService {
     private final int requestTimeoutMs;
 
     private final Map<Long, HourlyUsage> hourlyUsageMap = new ConcurrentHashMap<>();
-    private final Map<Long, AtomicInteger> dailyAnalysisCount = new ConcurrentHashMap<>();
+    private final Map<Long, DailyAnalysisCount> dailyAnalysisCount = new ConcurrentHashMap<>();
 
     public AIUsageService(
             @Value("${app.ai.limits.requests-per-user-per-hour:30}") int maxRequestsPerUserPerHour,
@@ -36,8 +38,11 @@ public class AIUsageService {
     }
 
     public boolean canPerformAnalysis(Long userId) {
-        AtomicInteger count = dailyAnalysisCount.computeIfAbsent(userId, k -> new AtomicInteger(0));
-        return count.get() < maxAnalysisPerDay;
+        DailyAnalysisCount usage = dailyAnalysisCount.computeIfAbsent(userId, k -> new DailyAnalysisCount());
+        if (!usage.isToday()) {
+            usage.reset();
+        }
+        return usage.getCount() < maxAnalysisPerDay;
     }
 
     public void recordRequest(Long userId) {
@@ -46,18 +51,21 @@ public class AIUsageService {
     }
 
     public void recordAnalysis(Long userId) {
-        dailyAnalysisCount.computeIfAbsent(userId, k -> new AtomicInteger(0)).incrementAndGet();
+        DailyAnalysisCount usage = dailyAnalysisCount.computeIfAbsent(userId, k -> new DailyAnalysisCount());
+        if (!usage.isToday()) {
+            usage.reset();
+        }
+        usage.increment();
     }
 
+    @Scheduled(fixedRate = 3_600_000)
     public void cleanupExpiredUsage() {
         long now = System.currentTimeMillis();
         hourlyUsageMap.entrySet().removeIf(entry -> {
             HourlyUsage usage = entry.getValue();
-            if (now - usage.getWindowStart() > 3_600_000) {
-                return true;
-            }
-            return false;
+            return now - usage.getWindowStart() > 3_600_000;
         });
+        dailyAnalysisCount.entrySet().removeIf(entry -> !entry.getValue().isToday());
     }
 
     private static class HourlyUsage {
@@ -67,5 +75,15 @@ public class AIUsageService {
         int getCount() { return count.get(); }
         long getWindowStart() { return windowStart; }
         void increment() { count.incrementAndGet(); }
+    }
+
+    private static class DailyAnalysisCount {
+        private final AtomicInteger count = new AtomicInteger(0);
+        private volatile LocalDate date = LocalDate.now();
+
+        int getCount() { return count.get(); }
+        boolean isToday() { return date.equals(LocalDate.now()); }
+        void increment() { count.incrementAndGet(); }
+        void reset() { count.set(0); date = LocalDate.now(); }
     }
 }

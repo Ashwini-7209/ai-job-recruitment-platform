@@ -11,6 +11,7 @@ import com.jobplatform.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class ResumeImprovementService {
         this.aiMatchingService = aiMatchingService;
     }
 
+    @Transactional(readOnly = true)
     public ResumeImprovementResponse analyzeResume(User candidate, Long resumeId) {
         Resume resume = resumeRepository.findById(resumeId)
                 .filter(r -> r.getCandidate().getId().equals(candidate.getId()))

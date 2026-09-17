@@ -1,5 +1,9 @@
 export { default as CandidateIndex } from './CandidateIndex';
 export { default as CandidateDashboardPage } from './CandidateDashboardPage';
+export { default as CandidateProfilePage } from './CandidateProfilePage';
+export { default as CandidateResumePage } from './CandidateResumePage';
+export { default as CandidateJobSearchPage } from './CandidateJobSearchPage';
+export { default as CandidateJobDetailPage } from './CandidateJobDetailPage';
 export { default as CandidateApplicationsPage } from './CandidateApplicationsPage';
 export { default as CandidateApplicationDetailPage } from './CandidateApplicationDetailPage';
 export { default as CandidateInterviewsPage } from './CandidateInterviewsPage';

@@ -44,8 +44,8 @@ export default function ValueSection() {
     <section className="py-16 sm:py-20 bg-white" id="value">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <p className="text-overline text-primary-600 mb-3">Why JobRecruit</p>
-          <h2 className="text-display-sm text-neutral-900">
+          <p className="text-overline text-secondary-500 mb-3">Why HireFlow</p>
+          <h2 className="text-display-sm text-primary-900">
             Recruitment built for the modern workforce
           </h2>
           <p className="mt-3 text-body-lg text-neutral-500">
@@ -57,10 +57,10 @@ export default function ValueSection() {
           {values.map((item) => (
             <Card key={item.title} padding="lg" className="group hover:shadow-md transition-shadow duration-200">
               <CardContent>
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50 text-primary-600 mb-4 group-hover:bg-primary-100 transition-colors">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-secondary-50 text-secondary-700 mb-4 group-hover:bg-secondary-100 transition-colors">
                   {item.icon}
                 </div>
-                <h3 className="text-heading-md text-neutral-900">{item.title}</h3>
+                <h3 className="text-heading-md text-primary-900">{item.title}</h3>
                 <p className="mt-2 text-body-sm text-neutral-500 leading-relaxed">{item.description}</p>
               </CardContent>
             </Card>

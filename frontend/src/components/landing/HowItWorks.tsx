@@ -95,7 +95,7 @@ export default function HowItWorks() {
     <section className="py-16 sm:py-20 bg-neutral-50" id="how-it-works">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <p className="text-overline text-primary-600 mb-3">How It Works</p>
+          <p className="text-overline text-secondary-500 mb-3">How It Works</p>
           <h2 className="text-display-sm text-neutral-900">
             Get started in minutes
           </h2>
@@ -140,10 +140,10 @@ export default function HowItWorks() {
               )}
               <div className="relative bg-white rounded-xl p-5 ring-1 ring-neutral-200 hover:shadow-sm transition-shadow duration-200">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary-50 text-secondary-700">
                     {item.icon}
                   </div>
-                  <span className="text-xs font-semibold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-semibold text-secondary-500 bg-secondary-50 px-2 py-0.5 rounded-full">
                     Step {item.step}
                   </span>
                 </div>

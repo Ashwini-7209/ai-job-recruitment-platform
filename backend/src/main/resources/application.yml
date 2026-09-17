@@ -35,11 +35,28 @@ spring:
     serialization:
       write-dates-as-timestamps: false
     default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: false
 
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH:false}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS:false}
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 server:
   port: ${SERVER_PORT:8080}
@@ -84,6 +101,10 @@ app:
       requests-per-user-per-hour: ${AI_REQUESTS_PER_HOUR:30}
       analysis-per-day: ${AI_ANALYSIS_PER_DAY:50}
       request-timeout-ms: ${AI_REQUEST_TIMEOUT_MS:30000}
+  mail:
+    enabled: ${MAIL_ENABLED:false}
+    from: ${MAIL_FROM:noreply@hireflow.com}
+    reset-url-base: ${MAIL_RESET_URL_BASE:http://localhost:3000/reset-password}
 
 jwt:
   secret: ${JWT_SECRET:my-secret-key-for-development-only-must-be-at-least-32-chars}

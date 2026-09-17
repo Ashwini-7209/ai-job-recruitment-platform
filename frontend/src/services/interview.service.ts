@@ -37,6 +37,13 @@ export const interviewService = {
     return response.data!;
   },
 
+  async getApplicationInterviews(applicationId: number): Promise<RecruiterInterviewDetail[]> {
+    const response = await api.get<RecruiterInterviewDetail[]>(
+      `/recruiters/me/applications/${applicationId}/interviews`
+    );
+    return response.data!;
+  },
+
   async getRecruiterInterviews(params?: { page?: number; size?: number; sort?: string }): Promise<PagedResponse<RecruiterInterviewDetail>> {
     const searchParams = new URLSearchParams();
     if (params?.page !== undefined) searchParams.set('page', String(params.page));

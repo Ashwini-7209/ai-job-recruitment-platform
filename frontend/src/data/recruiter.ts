@@ -18,8 +18,8 @@ export const hiringMetrics: HiringMetric[] = [
 
 export const hiringFunnel: HiringFunnelStage[] = [
   { stage: 'Applications', count: 347, percentage: 100, color: 'bg-secondary-500' },
-  { stage: 'Screening', count: 198, percentage: 57, color: 'bg-primary-500' },
-  { stage: 'Shortlisted', count: 64, percentage: 18, color: 'bg-accent-500' },
+  { stage: 'Screening', count: 198, percentage: 57, color: 'bg-secondary-500' },
+  { stage: 'Shortlisted', count: 64, percentage: 18, color: 'bg-secondary-500' },
   { stage: 'Interview', count: 18, percentage: 5, color: 'bg-warning-500' },
   { stage: 'Offer', count: 4, percentage: 1, color: 'bg-success-500' },
 ];

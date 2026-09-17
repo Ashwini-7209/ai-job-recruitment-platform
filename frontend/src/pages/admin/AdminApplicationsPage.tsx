@@ -7,6 +7,7 @@ const statusOptions = [
   { value: 'APPLIED', label: 'Applied' },
   { value: 'UNDER_REVIEW', label: 'Under Review' },
   { value: 'SHORTLISTED', label: 'Shortlisted' },
+  { value: 'INTERVIEW', label: 'Interview' },
   { value: 'REJECTED', label: 'Rejected' },
   { value: 'HIRED', label: 'Hired' },
   { value: 'WITHDRAWN', label: 'Withdrawn' },
@@ -16,6 +17,7 @@ const statusBadgeColors: Record<string, 'default' | 'primary' | 'success' | 'war
   APPLIED: 'default',
   UNDER_REVIEW: 'primary',
   SHORTLISTED: 'success',
+  INTERVIEW: 'primary',
   REJECTED: 'error',
   HIRED: 'success',
   WITHDRAWN: 'warning',
@@ -43,9 +45,9 @@ export default function AdminApplicationsPage() {
       });
       if (response.success && response.data) {
         if (reset || pageNum === 0) {
-          setApplications(response.data.content);
+          setApplications(response.data.content ?? []);
         } else {
-          setApplications(prev => [...prev, ...response.data!.content]);
+          setApplications(prev => [...prev, ...(response.data!.content ?? [])]);
         }
         setHasMore(!response.data.last);
         setTotalElements(response.data.totalElements);
@@ -71,7 +73,7 @@ export default function AdminApplicationsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[var(--content-max-width)] mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-heading-lg text-neutral-900">Applications</h1>
@@ -170,8 +172,9 @@ export default function AdminApplicationsPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setPage(prev => prev + 1);
-                  fetchApplications(page + 1);
+                  const nextPage = page + 1;
+                  setPage(nextPage);
+                  fetchApplications(nextPage);
                 }}
                 loading={loading}
               >

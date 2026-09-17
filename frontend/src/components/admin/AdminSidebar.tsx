@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SidebarNavItem, SidebarNavGroup, SidebarFooter } from '@/components/layout';
 import { Avatar } from '@/components/ui';
+import { useAuth } from '@/contexts';
 
 const mainNavItems = [
   {
@@ -32,7 +33,7 @@ const mainNavItems = [
       </svg>
     ),
     label: 'Candidates',
-    href: '/admin/users',
+    href: '/admin/users?role=CANDIDATE',
   },
   {
     icon: (
@@ -44,7 +45,7 @@ const mainNavItems = [
       </svg>
     ),
     label: 'Recruiters',
-    href: '/admin/users',
+    href: '/admin/users?role=RECRUITER',
   },
   {
     icon: (
@@ -88,6 +89,18 @@ const secondaryNavItems = [
   },
 ];
 
+const settingsNavItems = [
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+      </svg>
+    ),
+    label: 'Change Password',
+    href: '/change-password',
+  },
+];
+
 interface AdminSidebarProps {
   onNavigate?: () => void;
 }
@@ -95,6 +108,7 @@ interface AdminSidebarProps {
 export default function AdminSidebar({ onNavigate }: AdminSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleNav = (href: string) => {
     navigate(href);
@@ -102,6 +116,10 @@ export default function AdminSidebar({ onNavigate }: AdminSidebarProps) {
   };
 
   const isActive = (href: string) => location.pathname === href;
+
+  const initials = user?.fullName
+    ? user.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'SA';
 
   return (
     <>
@@ -127,12 +145,23 @@ export default function AdminSidebar({ onNavigate }: AdminSidebarProps) {
           />
         ))}
       </SidebarNavGroup>
+      <SidebarNavGroup label="Settings">
+        {settingsNavItems.map((item) => (
+          <SidebarNavItem
+            key={item.href}
+            icon={item.icon}
+            label={item.label}
+            active={isActive(item.href)}
+            onClick={() => handleNav(item.href)}
+          />
+        ))}
+      </SidebarNavGroup>
       <SidebarFooter>
         <div className="flex items-center gap-3">
-          <Avatar size="sm" initials="SA" color="accent" />
+          <Avatar size="sm" initials={initials} color="secondary" />
           <div className="min-w-0 flex-1 hidden lg:block">
-            <p className="text-sm font-medium text-neutral-900 truncate">System Admin</p>
-            <p className="text-xs text-neutral-500 truncate">admin@jobrecruit.com</p>
+            <p className="text-sm font-medium text-neutral-900 truncate">{user?.fullName || 'Admin'}</p>
+            <p className="text-xs text-neutral-500 truncate">{user?.email || ''}</p>
           </div>
         </div>
       </SidebarFooter>

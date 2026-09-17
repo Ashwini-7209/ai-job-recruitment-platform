@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -39,6 +40,7 @@ public class JobRecommendationService {
         this.jobMatchingService = jobMatchingService;
     }
 
+    @Transactional(readOnly = true)
     public RecommendationResult getRecommendations(User candidate, int page, int size,
                                                      Integer minScore) {
         Pageable pageable = PageRequest.of(page, size);

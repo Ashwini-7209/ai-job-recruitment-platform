@@ -41,7 +41,7 @@ export default function AdminLayout() {
         onClick={() => navigate('/admin/settings')}
         className="flex items-center gap-2 rounded-lg p-1 hover:bg-neutral-100 transition-colors"
       >
-        <Avatar size="sm" initials={initials} color="accent" />
+        <Avatar size="sm" initials={initials} color="secondary" />
         <span className="hidden md:block text-sm font-medium text-neutral-700">
           {user?.fullName || 'Admin'}
         </span>

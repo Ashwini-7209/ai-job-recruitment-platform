@@ -29,7 +29,9 @@ apiClient.interceptors.response.use(
       const isAuthPage =
         window.location.pathname === '/login' ||
         window.location.pathname === '/register' ||
-        window.location.pathname.startsWith('/register/');
+        window.location.pathname.startsWith('/register/') ||
+        window.location.pathname === '/forgot-password' ||
+        window.location.pathname.startsWith('/reset-password');
       if (!isAuthPage) {
         window.location.href = '/login';
       }
@@ -62,6 +64,23 @@ export const api = {
   delete: async <T>(url: string): Promise<ApiResponse<T>> => {
     const response = await apiClient.delete<ApiResponse<T>>(url);
     return response.data;
+  },
+
+  downloadBlob: async (url: string, filename: string): Promise<void> => {
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}${url}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!response.ok) throw new Error(`Download failed: ${response.status}`);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(blobUrl);
   },
 };
 

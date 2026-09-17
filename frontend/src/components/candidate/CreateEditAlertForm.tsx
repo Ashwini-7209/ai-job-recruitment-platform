@@ -190,7 +190,7 @@ export default function CreateEditAlertForm({ initialData, onSubmit, onCancel }:
             onChange={e => setFormData(prev => ({ ...prev, active: e.target.checked }))}
             className="peer sr-only"
           />
-          <div className="h-6 w-11 rounded-full bg-neutral-200 transition-colors peer-checked:bg-primary-600" />
+          <div className="h-6 w-11 rounded-full bg-neutral-200 transition-colors peer-checked:bg-secondary-600" />
           <div className="absolute left-0.5 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform peer-checked:translate-x-5" />
         </label>
         <span className="text-sm text-neutral-700">Active</span>

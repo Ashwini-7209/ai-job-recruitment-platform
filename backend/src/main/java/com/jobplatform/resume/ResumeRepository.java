@@ -27,4 +27,7 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     void deactivateAllByCandidate(User candidate);
 
     long countByCandidate(User candidate);
+
+    @Query("SELECT r.candidate.id FROM Resume r WHERE r.active = true AND r.candidate.id IN :userIds")
+    List<Long> findCandidateIdsWithActiveResume(@org.springframework.data.repository.query.Param("userIds") List<Long> userIds);
 }

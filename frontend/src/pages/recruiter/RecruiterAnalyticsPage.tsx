@@ -68,42 +68,42 @@ export default function RecruiterAnalyticsPage() {
     : [];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[var(--content-max-width)] mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Recruiter Analytics</h1>
-          <p className="text-gray-500">Track your recruitment performance</p>
+          <h1 className="text-heading-lg text-neutral-900">Recruiter Analytics</h1>
+          <p className="text-body-md text-neutral-500">Track your recruitment performance</p>
         </div>
         <div className="flex gap-2">
           <input
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="border rounded px-3 py-1 text-sm"
+            className="border border-neutral-200 rounded-lg px-3 py-1.5 text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary-500"
           />
           <input
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="border rounded px-3 py-1 text-sm"
+            className="border border-neutral-200 rounded-lg px-3 py-1.5 text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary-500"
           />
         </div>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[...Array(8)].map((_, i) => (
             <Skeleton key={i} className="h-24" />
           ))}
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {summaryCards.map((card) => (
               <Card key={card.title}>
                 <CardContent className="pt-6">
-                  <p className="text-sm text-gray-500">{card.title}</p>
-                  <p className="text-2xl font-bold">{card.value}</p>
+                  <p className="text-body-sm text-neutral-500">{card.title}</p>
+                  <p className="text-heading-md text-neutral-900">{card.value}</p>
                 </CardContent>
               </Card>
             ))}
@@ -118,7 +118,7 @@ export default function RecruiterAnalyticsPage() {
                 {funnelChartData.length > 0 ? (
                   <BarChart data={funnelChartData} height={250} />
                 ) : (
-                  <p className="text-gray-500 text-center py-8">No data available</p>
+                  <p className="text-neutral-500 text-center py-8">No data available</p>
                 )}
               </CardContent>
             </Card>
@@ -131,7 +131,7 @@ export default function RecruiterAnalyticsPage() {
                 {trendChartData.length > 0 ? (
                   <BarChart data={trendChartData} height={250} />
                 ) : (
-                  <p className="text-gray-500 text-center py-8">No data available</p>
+                  <p className="text-neutral-500 text-center py-8">No data available</p>
                 )}
               </CardContent>
             </Card>
@@ -143,22 +143,22 @@ export default function RecruiterAnalyticsPage() {
                 <CardTitle>Hiring Metrics</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Shortlist Rate</p>
-                    <p className="text-xl font-bold">{hiringMetrics.shortlistRate}%</p>
+                    <p className="text-body-sm text-neutral-500">Shortlist Rate</p>
+                    <p className="text-heading-md text-neutral-900">{hiringMetrics.shortlistRate}%</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Hire Rate</p>
-                    <p className="text-xl font-bold">{hiringMetrics.hireRate}%</p>
+                    <p className="text-body-sm text-neutral-500">Hire Rate</p>
+                    <p className="text-heading-md text-neutral-900">{hiringMetrics.hireRate}%</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Total Hired</p>
-                    <p className="text-xl font-bold">{hiringMetrics.totalHired}</p>
+                    <p className="text-body-sm text-neutral-500">Total Hired</p>
+                    <p className="text-heading-md text-neutral-900">{hiringMetrics.totalHired}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Completed Interviews</p>
-                    <p className="text-xl font-bold">{hiringMetrics.completedInterviews}</p>
+                    <p className="text-body-sm text-neutral-500">Completed Interviews</p>
+                    <p className="text-heading-md text-neutral-900">{hiringMetrics.completedInterviews}</p>
                   </div>
                 </div>
               </CardContent>

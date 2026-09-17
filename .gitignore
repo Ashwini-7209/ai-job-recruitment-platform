@@ -36,11 +36,19 @@ Desktop.ini
 .env
 .env.local
 .env.*.local
+.env.production
+.env.staging
 backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
 *.env.local
+*.env.production
 
-# === Keep example config tracked ===
+# === Keep example configs tracked ===
 !.env.example
+!.env.production.example
+!backend/.env.example
 
 # === Logs ===
 logs/
@@ -49,7 +57,12 @@ log/
 
 # === Docker ===
 docker-compose.override.yml
+.env
 
 # === Build artifacts ===
 *.tar.gz
 *.zip
+
+# === Test artifacts ===
+backend/test-uploads/
+backend/uploads/

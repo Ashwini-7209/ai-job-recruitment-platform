@@ -12,7 +12,7 @@ public class RuleBasedMatchingEngine {
     static final double SKILL_WEIGHT = 0.50;
     static final double EXPERIENCE_WEIGHT = 0.25;
     static final double PROFILE_WEIGHT = 0.15;
-    static final double AI_ENHANCEMENT_WEIGHT = 0.15;
+    static final double AI_ENHANCEMENT_WEIGHT = 0.85;
 
     public DeterministicScore calculate(CandidateData candidate, JobData job) {
         Set<String> candidateSkills = candidate.getSkills() != null

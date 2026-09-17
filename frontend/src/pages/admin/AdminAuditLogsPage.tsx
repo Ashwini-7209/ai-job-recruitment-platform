@@ -76,7 +76,7 @@ export default function AdminAuditLogsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[var(--content-max-width)] mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-heading-lg text-neutral-900">Audit Logs</h1>
@@ -146,7 +146,7 @@ export default function AdminAuditLogsPage() {
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center">
                     <span className="text-body-sm font-medium text-neutral-600">
-                      {log.actorName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                      {(log.actorName || '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -174,8 +174,9 @@ export default function AdminAuditLogsPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setPage(prev => prev + 1);
-                  fetchLogs(page + 1);
+                  const nextPage = page + 1;
+                  setPage(nextPage);
+                  fetchLogs(nextPage);
                 }}
                 loading={loading}
               >

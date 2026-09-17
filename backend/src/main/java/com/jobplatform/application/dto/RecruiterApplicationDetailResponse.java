@@ -16,6 +16,8 @@ import java.util.List;
 public class RecruiterApplicationDetailResponse {
 
     private Long applicationId;
+    private Long jobId;
+    private String jobTitle;
     private ApplicationStatus status;
     private String coverLetter;
     private LocalDateTime appliedAt;
@@ -64,5 +66,6 @@ public class RecruiterApplicationDetailResponse {
         private ApplicationStatus newStatus;
         private String changedByName;
         private LocalDateTime changedAt;
+        private String reason;
     }
 }

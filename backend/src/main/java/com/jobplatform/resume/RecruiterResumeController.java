@@ -36,7 +36,7 @@ public class RecruiterResumeController {
     public void downloadApplicationResume(@PathVariable Long applicationId, HttpServletResponse response) throws IOException {
         User recruiter = CurrentUserUtil.getCurrentUser();
 
-        Application application = applicationRepository.findById(applicationId)
+        Application application = applicationRepository.findByIdWithJobAndResume(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Application", "id", applicationId));
 
         if (!application.getJob().getRecruiter().getId().equals(recruiter.getId())) {
@@ -44,7 +44,7 @@ public class RecruiterResumeController {
         }
 
         if (application.getSubmittedResume() == null) {
-            throw new BadRequestException("No resume associated with this application");
+            throw new ResourceNotFoundException("Resume", "applicationId", applicationId);
         }
 
         Resume resume = application.getSubmittedResume();
@@ -54,7 +54,7 @@ public class RecruiterResumeController {
 
         response.setContentType(resume.getContentType());
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + resume.getOriginalFileName() + "\"");
+                "attachment; filename=\"" + resumeService.sanitizeHeaderFileName(resume.getOriginalFileName()) + "\"");
         response.setContentLength(resume.getFileSize().intValue());
 
         inputStream.transferTo(response.getOutputStream());

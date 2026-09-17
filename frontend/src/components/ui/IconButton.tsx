@@ -16,7 +16,7 @@ const sizeStyles: Record<IconButtonSize, string> = {
 const variantStyles: Record<string, string> = {
   ghost: 'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200',
   outline: 'text-neutral-600 ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 active:bg-neutral-100',
-  primary: 'text-white bg-primary-600 hover:bg-primary-700 active:bg-primary-800 shadow-sm',
+  primary: 'text-white bg-secondary-600 hover:bg-secondary-700 active:bg-secondary-800 shadow-sm',
 };
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
@@ -27,7 +27,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         className={[
           'inline-flex items-center justify-center rounded-lg',
           'transition-colors duration-150 ease-in-out',
-          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-600',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           sizeStyles[size],
           variantStyles[variant],

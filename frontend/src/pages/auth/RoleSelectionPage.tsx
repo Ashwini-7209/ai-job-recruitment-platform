@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '@/components/auth';
 import { Button } from '@/components/ui';
 import type { AuthRole } from '@/types/auth';
@@ -28,6 +28,7 @@ const roles: { value: AuthRole; title: string; description: string; icon: React.
 ];
 
 export default function RoleSelectionPage() {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<AuthRole | null>(null);
 
   return (
@@ -52,16 +53,16 @@ export default function RoleSelectionPage() {
                 onClick={() => setSelected(role.value)}
                 className={[
                   'w-full text-left rounded-xl p-5 border-2 transition-all duration-150',
-                  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600',
+                  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-600',
                   isSelected
-                    ? 'border-primary-500 bg-primary-50 ring-1 ring-primary-500'
+                    ? 'border-secondary-700 bg-secondary-50 ring-1 ring-secondary-700'
                     : 'border-neutral-200 bg-white hover:border-neutral-300 hover:bg-neutral-50',
                 ].join(' ')}
               >
                 <div className="flex items-start gap-4">
                   <div className={[
                     'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors',
-                    isSelected ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-500',
+                    isSelected ? 'bg-secondary-500 text-white' : 'bg-neutral-100 text-neutral-500',
                   ].join(' ')}>
                     {role.icon}
                   </div>
@@ -69,7 +70,7 @@ export default function RoleSelectionPage() {
                     <div className="flex items-center gap-2.5">
                       <h3 className="text-heading-sm text-neutral-900">{role.title}</h3>
                       {isSelected && (
-                        <svg className="h-4 w-4 shrink-0 text-primary-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <svg className="h-4 w-4 shrink-0 text-secondary-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                         </svg>
                       )}
@@ -88,7 +89,7 @@ export default function RoleSelectionPage() {
           disabled={!selected}
           onClick={() => {
             if (selected) {
-              window.location.href = selected === 'CANDIDATE' ? '/register/candidate' : '/register/recruiter';
+              navigate(selected === 'CANDIDATE' ? '/register/candidate' : '/register/recruiter');
             }
           }}
         >
@@ -97,7 +98,7 @@ export default function RoleSelectionPage() {
 
         <p className="text-center text-body-md text-neutral-500">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-primary-600 hover:text-primary-700 transition-colors">
+          <Link to="/login" className="font-medium text-secondary-600 hover:text-secondary-700 transition-colors">
             Sign in
           </Link>
         </p>

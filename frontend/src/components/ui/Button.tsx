@@ -14,13 +14,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-sm',
+    'bg-secondary-500 text-white hover:bg-secondary-600 active:bg-secondary-700 shadow-sm',
   secondary:
-    'bg-secondary-600 text-white hover:bg-secondary-700 active:bg-secondary-800 shadow-sm',
+    'bg-primary-900 text-white hover:bg-primary-800 active:bg-primary-950 shadow-sm',
   outline:
-    'bg-white text-neutral-700 ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 active:bg-neutral-100',
+    'bg-white text-primary-800 ring-1 ring-inset ring-neutral-200 hover:bg-secondary-50 hover:ring-secondary-300 active:bg-secondary-100',
   ghost:
-    'bg-transparent text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200',
+    'bg-transparent text-neutral-600 hover:bg-neutral-100 active:bg-neutral-200',
   danger:
     'bg-error-600 text-white hover:bg-error-700 active:bg-error-800 shadow-sm',
 };
@@ -53,8 +53,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         className={[
           'inline-flex items-center justify-center rounded-lg font-medium',
-          'transition-colors duration-150 ease-in-out',
-          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600',
+          'transition-all duration-150 ease-in-out',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-500',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           variantStyles[variant],
           sizeStyles[size],

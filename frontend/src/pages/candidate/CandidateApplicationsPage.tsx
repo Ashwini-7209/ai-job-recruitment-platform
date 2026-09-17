@@ -9,6 +9,7 @@ const statusOptions = [
   { value: 'APPLIED', label: 'Applied' },
   { value: 'UNDER_REVIEW', label: 'Under Review' },
   { value: 'SHORTLISTED', label: 'Shortlisted' },
+  { value: 'INTERVIEW', label: 'Interview' },
   { value: 'REJECTED', label: 'Rejected' },
   { value: 'HIRED', label: 'Hired' },
   { value: 'WITHDRAWN', label: 'Withdrawn' },
@@ -24,6 +25,7 @@ const statusBadgeVariant: Record<string, 'info' | 'warning' | 'success' | 'error
   APPLIED: 'info',
   UNDER_REVIEW: 'warning',
   SHORTLISTED: 'success',
+  INTERVIEW: 'info',
   REJECTED: 'error',
   HIRED: 'primary',
   WITHDRAWN: 'default',
@@ -33,16 +35,20 @@ const statusLabels: Record<string, string> = {
   APPLIED: 'Applied',
   UNDER_REVIEW: 'Under Review',
   SHORTLISTED: 'Shortlisted',
+  INTERVIEW: 'Interview',
   REJECTED: 'Rejected',
   HIRED: 'Hired',
   WITHDRAWN: 'Withdrawn',
 };
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '-';
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function formatEmploymentType(type: string): string {
+  if (!type) return '';
   return type.replace('_', ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
 }
 

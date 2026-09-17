@@ -88,48 +88,48 @@ export default function AdminAnalyticsPage() {
     : [];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[var(--content-max-width)] mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Platform Analytics</h1>
-          <p className="text-gray-500">Overview of platform activity</p>
+          <h1 className="text-heading-lg text-neutral-900">Platform Analytics</h1>
+          <p className="text-body-md text-neutral-500">Overview of platform activity</p>
         </div>
         <div className="flex gap-2">
           <input
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="border rounded px-3 py-1 text-sm"
+            className="border border-neutral-200 rounded-lg px-3 py-1.5 text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary-500"
           />
           <input
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="border rounded px-3 py-1 text-sm"
+            className="border border-neutral-200 rounded-lg px-3 py-1.5 text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary-500"
           />
         </div>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[...Array(8)].map((_, i) => (
             <Skeleton key={i} className="h-24" />
           ))}
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {summaryCards.map((card) => (
               <Card key={card.title}>
                 <CardContent className="pt-6">
-                  <p className="text-sm text-gray-500">{card.title}</p>
-                  <p className="text-2xl font-bold">{card.value}</p>
+                  <p className="text-body-sm text-neutral-500">{card.title}</p>
+                  <p className="text-heading-md text-neutral-900">{card.value}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <Card>
               <CardHeader>
                 <CardTitle>User Growth</CardTitle>
@@ -138,7 +138,7 @@ export default function AdminAnalyticsPage() {
                 {userGrowthChartData.length > 0 ? (
                   <BarChart data={userGrowthChartData} height={200} />
                 ) : (
-                  <p className="text-gray-500 text-center py-8">No data available</p>
+                  <p className="text-neutral-500 text-center py-8">No data available</p>
                 )}
               </CardContent>
             </Card>
@@ -151,7 +151,7 @@ export default function AdminAnalyticsPage() {
                 {jobChartData.length > 0 ? (
                   <BarChart data={jobChartData} height={200} />
                 ) : (
-                  <p className="text-gray-500 text-center py-8">No data available</p>
+                  <p className="text-neutral-500 text-center py-8">No data available</p>
                 )}
               </CardContent>
             </Card>
@@ -164,7 +164,7 @@ export default function AdminAnalyticsPage() {
                 {appChartData.length > 0 ? (
                   <BarChart data={appChartData} height={200} />
                 ) : (
-                  <p className="text-gray-500 text-center py-8">No data available</p>
+                  <p className="text-neutral-500 text-center py-8">No data available</p>
                 )}
               </CardContent>
             </Card>
@@ -177,7 +177,7 @@ export default function AdminAnalyticsPage() {
                 {interviewChartData.length > 0 ? (
                   <BarChart data={interviewChartData} height={200} />
                 ) : (
-                  <p className="text-gray-500 text-center py-8">No data available</p>
+                  <p className="text-neutral-500 text-center py-8">No data available</p>
                 )}
               </CardContent>
             </Card>
@@ -190,7 +190,7 @@ export default function AdminAnalyticsPage() {
                 {appTrendChartData.length > 0 ? (
                   <BarChart data={appTrendChartData} height={200} />
                 ) : (
-                  <p className="text-gray-500 text-center py-8">No data available</p>
+                  <p className="text-neutral-500 text-center py-8">No data available</p>
                 )}
               </CardContent>
             </Card>

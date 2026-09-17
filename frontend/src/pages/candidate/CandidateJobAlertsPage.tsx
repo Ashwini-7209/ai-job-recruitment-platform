@@ -86,7 +86,9 @@ export default function CandidateJobAlertsPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '-';
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -272,8 +274,9 @@ export default function CandidateJobAlertsPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setPage(prev => prev + 1);
-                  fetchAlerts(page + 1);
+                  const nextPage = page + 1;
+                  setPage(nextPage);
+                  fetchAlerts(nextPage);
                 }}
                 loading={loading}
               >

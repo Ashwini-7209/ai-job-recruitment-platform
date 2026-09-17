@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { AppShell, SidebarNavItem, SidebarNavGroup, SidebarFooter, TopBar, useSidebar } from '@/components/layout';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 import { Avatar, IconButton } from '@/components/ui';
@@ -108,6 +108,34 @@ function SidebarContent() {
 export default function AppLayout() {
   const isMobile = useIsMobile();
   const { openMobile } = useSidebar();
+  const location = useLocation();
+
+  const titleMap: Record<string, string> = {
+    '/recruiter': 'Recruiter Dashboard',
+    '/recruiter/jobs': 'Manage Jobs',
+    '/recruiter/applications': 'Applications',
+    '/recruiter/interviews': 'Interviews',
+    '/recruiter/candidates': 'Candidate Search',
+    '/recruiter/analytics': 'Analytics',
+    '/recruiter/profile': 'Profile',
+    '/candidate': 'Candidate Dashboard',
+    '/candidate/jobs': 'Browse Jobs',
+    '/candidate/applications': 'My Applications',
+    '/candidate/interviews': 'Interviews',
+    '/candidate/saved-jobs': 'Saved Jobs',
+    '/candidate/resume': 'Resume',
+    '/candidate/ai': 'AI Career Assistant',
+    '/candidate/analytics': 'Analytics',
+    '/candidate/preferences': 'Preferences',
+    '/admin': 'Admin Dashboard',
+    '/admin/users': 'User Management',
+    '/admin/jobs': 'Job Management',
+    '/admin/applications': 'Applications',
+    '/admin/analytics': 'Analytics',
+    '/admin/audit-logs': 'Audit Logs',
+  };
+
+  const pageTitle = titleMap[location.pathname] || 'Job Portal';
 
   const topBarActions = (
     <>
@@ -140,7 +168,7 @@ export default function AppLayout() {
               </svg>
             </IconButton>
           ) : undefined}
-          title="Design System"
+          title={pageTitle}
           actions={topBarActions}
         />
       }

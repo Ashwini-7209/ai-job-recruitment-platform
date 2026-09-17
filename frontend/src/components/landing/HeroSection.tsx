@@ -3,25 +3,25 @@ import { Button, Badge } from '@/components/ui';
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-primary-50/50 via-white to-neutral-50">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 lg:pb-28">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <section className="relative overflow-hidden bg-gradient-to-b from-secondary-50/50 via-white to-neutral-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 lg:pt-24 pb-12 sm:pb-16 lg:pb-28">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Left content */}
           <div className="max-w-2xl">
-            <Badge variant="primary" size="md" className="mb-5">
+            <Badge variant="primary" size="md" className="mb-4 sm:mb-5">
               AI-Powered Recruitment Platform
             </Badge>
-            <h1 className="text-display-lg text-neutral-900">
+            <h1 className="text-display-lg text-primary-900">
               Smarter hiring starts with{' '}
-              <span className="text-primary-600">better data</span>
+              <span className="text-secondary-600">better data</span>
             </h1>
-            <p className="mt-5 text-body-lg text-neutral-600 max-w-lg">
+            <p className="mt-4 sm:mt-5 text-body-lg text-neutral-600 max-w-lg">
               JobRecruit connects talented candidates with the right opportunities using AI-driven matching,
               resume analysis, and intelligent recruitment workflows. Build your career or find your next great hire.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
               <Link to="/register/candidate">
-                <Button size="lg" variant="primary">
+                <Button size="lg" variant="primary" className="w-full sm:w-auto">
                   Find Your Next Role
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="ml-1">
                     <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -29,26 +29,26 @@ export default function HeroSection() {
                 </Button>
               </Link>
               <Link to="/register/recruiter">
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto">
                   Post a Job
                 </Button>
               </Link>
             </div>
-            <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-sm text-neutral-500">
               <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-success-500">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-secondary-500 shrink-0">
                   <path d="M13.3 4.7L6 12 2.7 8.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span>AI resume analysis</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-success-500">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-secondary-500 shrink-0">
                   <path d="M13.3 4.7L6 12 2.7 8.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span>Smart job matching</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-success-500">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-secondary-500 shrink-0">
                   <path d="M13.3 4.7L6 12 2.7 8.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span>Free to start</span>
@@ -58,7 +58,7 @@ export default function HeroSection() {
 
           {/* Right - Dashboard mockup */}
           <div className="relative hidden lg:block">
-            <div className="relative rounded-xl bg-white ring-1 ring-neutral-200 shadow-lg overflow-hidden">
+            <div className="relative rounded-xl bg-white ring-1 ring-neutral-200/80 shadow-lg overflow-hidden">
               {/* Mockup header */}
               <div className="flex items-center gap-2 px-4 py-3 border-b border-neutral-100 bg-neutral-50/50">
                 <div className="flex gap-1.5">
@@ -81,16 +81,16 @@ export default function HeroSection() {
                   ].map((stat) => (
                     <div key={stat.label} className="rounded-lg bg-neutral-50 p-3 ring-1 ring-neutral-100">
                       <p className="text-xs text-neutral-500">{stat.label}</p>
-                      <p className="text-lg font-semibold text-neutral-900 mt-0.5">{stat.value}</p>
-                      <p className="text-xs text-success-600 mt-0.5">{stat.change}</p>
+                      <p className="text-lg font-semibold text-primary-900 mt-0.5">{stat.value}</p>
+                      <p className="text-xs text-secondary-600 mt-0.5">{stat.change}</p>
                     </div>
                   ))}
                 </div>
                 {/* Job matches */}
                 <div className="rounded-lg bg-neutral-50 p-4 ring-1 ring-neutral-100">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-medium text-neutral-900">Top Job Matches</p>
-                    <span className="text-xs text-primary-600 font-medium">View all</span>
+                    <p className="text-sm font-medium text-primary-900">Top Job Matches</p>
+                    <span className="text-xs text-secondary-600 font-medium">View all</span>
                   </div>
                   <div className="space-y-2.5">
                     {[
@@ -100,10 +100,10 @@ export default function HeroSection() {
                     ].map((job, i) => (
                       <div key={i} className="flex items-center justify-between rounded-md bg-white p-2.5 ring-1 ring-neutral-200">
                         <div>
-                          <p className="text-sm font-medium text-neutral-900">{job.title}</p>
+                          <p className="text-sm font-medium text-primary-900">{job.title}</p>
                           <p className="text-xs text-neutral-500">{job.company}</p>
                         </div>
-                        <span className="text-xs font-medium text-success-600 bg-success-50 px-2 py-0.5 rounded-full">{job.match}</span>
+                        <span className="text-xs font-medium text-secondary-600 bg-secondary-50 px-2 py-0.5 rounded-full">{job.match}</span>
                       </div>
                     ))}
                   </div>
@@ -111,8 +111,8 @@ export default function HeroSection() {
               </div>
             </div>
             {/* Decorative elements */}
-            <div className="absolute -bottom-4 -left-4 h-24 w-24 rounded-full bg-primary-100/50 blur-2xl" />
-            <div className="absolute -top-4 -right-4 h-20 w-20 rounded-full bg-accent-100/50 blur-2xl" />
+            <div className="absolute -bottom-4 -left-4 h-24 w-24 rounded-full bg-secondary-100/50 blur-2xl" />
+            <div className="absolute -top-4 -right-4 h-20 w-20 rounded-full bg-secondary-100/50 blur-2xl" />
           </div>
         </div>
       </div>

@@ -59,14 +59,18 @@ public interface JobRepository extends JpaRepository<Job, Long> {
            "LOWER(j.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
            "LOWER(j.description) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
            "LOWER(j.location) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-           "LOWER(j.skills) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+           "LOWER(j.skills) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+           "LOWER(j.recruiter.fullName) LIKE LOWER(CONCAT('%', :query, '%'))) " +
            "AND (:location IS NULL OR :location = '' OR LOWER(j.location) LIKE LOWER(CONCAT('%', :location, '%'))) " +
            "AND (:employmentType IS NULL OR j.employmentType = :employmentType) " +
            "AND (:workplaceType IS NULL OR j.workplaceType = :workplaceType) " +
            "AND (:experienceMin IS NULL OR j.experienceMax >= :experienceMin) " +
            "AND (:experienceMax IS NULL OR j.experienceMin <= :experienceMax) " +
            "AND (:salaryMin IS NULL OR j.salaryMax >= :salaryMin) " +
-           "AND (:salaryMax IS NULL OR j.salaryMin <= :salaryMax)")
+           "AND (:salaryMax IS NULL OR j.salaryMin <= :salaryMax) " +
+           "AND (:skills IS NULL OR :skills = '' OR LOWER(j.skills) LIKE LOWER(CONCAT('%', :skills, '%'))) " +
+           "AND (:companyName IS NULL OR :companyName = '' OR LOWER(j.recruiter.fullName) LIKE LOWER(CONCAT('%', :companyName, '%'))) " +
+           "AND (:postedAfter IS NULL OR j.publishedAt >= :postedAfter)")
     Page<Job> searchPublishedJobsCombined(
             @Param("query") String query,
             @Param("location") String location,
@@ -76,6 +80,9 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             @Param("experienceMax") Integer experienceMax,
             @Param("salaryMin") Integer salaryMin,
             @Param("salaryMax") Integer salaryMax,
+            @Param("skills") String skills,
+            @Param("companyName") String companyName,
+            @Param("postedAfter") java.time.LocalDateTime postedAfter,
             Pageable pageable);
 
     @Query("SELECT j FROM Job j WHERE j.recruiter = :recruiter ORDER BY j.createdAt DESC")

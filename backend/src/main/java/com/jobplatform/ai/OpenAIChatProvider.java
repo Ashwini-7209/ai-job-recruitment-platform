@@ -51,9 +51,14 @@ public class OpenAIChatProvider implements ChatAIProvider {
             return Optional.empty();
         }
         try {
+            var messages = new java.util.ArrayList<Message>();
+            if (systemPrompt != null && !systemPrompt.isBlank()) {
+                messages.add(new Message("system", systemPrompt));
+            }
+            messages.add(new Message("user", userPrompt));
             String requestBody = objectMapper.writeValueAsString(new ChatRequest(
                     model,
-                    List.of(new Message("user", userPrompt)),
+                    messages,
                     maxTokens
             ));
 

@@ -11,6 +11,8 @@ import com.jobplatform.job.dto.UpdateJobRequest;
 import com.jobplatform.job.enums.EmploymentType;
 import com.jobplatform.job.enums.JobStatus;
 import com.jobplatform.job.enums.WorkplaceType;
+import com.jobplatform.recruiter.RecruiterProfile;
+import com.jobplatform.recruiter.RecruiterProfileRepository;
 import com.jobplatform.user.User;
 import com.jobplatform.user.UserRole;
 import org.slf4j.Logger;
@@ -31,9 +33,11 @@ public class JobService {
     private static final int MAX_PAGE_SIZE = 50;
 
     private final JobRepository jobRepository;
+    private final RecruiterProfileRepository recruiterProfileRepository;
 
-    public JobService(JobRepository jobRepository) {
+    public JobService(JobRepository jobRepository, RecruiterProfileRepository recruiterProfileRepository) {
         this.jobRepository = jobRepository;
+        this.recruiterProfileRepository = recruiterProfileRepository;
     }
 
     @Transactional
@@ -69,7 +73,9 @@ public class JobService {
         if (recruiter.getRole() != UserRole.RECRUITER) {
             throw new BadRequestException("Only recruiters can view recruiter jobs");
         }
-        Pageable pageable = PageRequest.of(page, Math.min(size, MAX_PAGE_SIZE), Sort.by(Sort.Direction.DESC, "createdAt"));
+        int safeSize = Math.min(Math.max(size, 1), MAX_PAGE_SIZE);
+        int safePage = Math.max(page, 0);
+        Pageable pageable = PageRequest.of(safePage, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Page<Job> jobs;
         if (status != null) {
@@ -207,11 +213,13 @@ public class JobService {
     public PagedResponse<JobSummaryResponse> searchPublishedJobsCombined(
             String query, String location, EmploymentType employmentType, WorkplaceType workplaceType,
             Integer experienceMin, Integer experienceMax, Integer salaryMin, Integer salaryMax,
+            String skills, String companyName, java.time.LocalDateTime postedAfter,
             int page, int size, String sort) {
         Pageable pageable = buildPageable(page, size, sort);
         Page<Job> jobs = jobRepository.searchPublishedJobsCombined(
                 query, location, employmentType, workplaceType,
                 experienceMin, experienceMax, salaryMin, salaryMax,
+                skills, companyName, postedAfter,
                 pageable);
         return mapToSummaryPagedResponse(jobs);
     }
@@ -230,6 +238,7 @@ public class JobService {
                 .orElseThrow(() -> new ResourceNotFoundException("Job", "id", jobId));
     }
 
+    @Transactional(readOnly = true)
     public Job getJobEntityById(Long jobId) {
         return getJobById(jobId);
     }
@@ -321,15 +330,26 @@ public class JobService {
     }
 
     private JobSummaryResponse mapToSummaryResponse(Job job) {
+        String companyName = recruiterProfileRepository.findByUserId(job.getRecruiter().getId())
+                .map(RecruiterProfile::getCompanyName)
+                .orElse(null);
+
         return JobSummaryResponse.builder()
                 .id(job.getId())
+                .jobId(job.getId())
                 .title(job.getTitle())
+                .recruiterName(job.getRecruiter().getFullName())
+                .companyName(companyName)
                 .location(job.getLocation())
                 .employmentType(job.getEmploymentType())
                 .workplaceType(job.getWorkplaceType())
+                .experienceMin(job.getExperienceMin())
+                .experienceMax(job.getExperienceMax())
                 .salaryMin(job.getSalaryMin())
                 .salaryMax(job.getSalaryMax())
                 .skills(job.getSkills())
+                .status(job.getStatus())
+                .publishedAt(job.getPublishedAt())
                 .applicationDeadline(job.getApplicationDeadline())
                 .createdAt(job.getCreatedAt())
                 .build();

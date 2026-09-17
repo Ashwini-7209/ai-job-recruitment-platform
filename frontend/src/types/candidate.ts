@@ -25,7 +25,7 @@ export interface CandidateApplicationSummary {
   location: string;
   employmentType: string;
   workplaceType: string;
-  status: 'APPLIED' | 'UNDER_REVIEW' | 'SHORTLISTED' | 'REJECTED' | 'HIRED' | 'WITHDRAWN';
+  status: 'APPLIED' | 'UNDER_REVIEW' | 'SHORTLISTED' | 'INTERVIEW' | 'REJECTED' | 'HIRED' | 'WITHDRAWN';
   appliedAt: string;
   updatedAt: string;
   hasResume: boolean;
@@ -39,11 +39,12 @@ export interface StatusHistoryEntry {
   newStatus: string;
   changedByName: string;
   changedAt: string;
+  reason: string | null;
 }
 
 export interface CandidateApplicationDetail {
   applicationId: number;
-  status: 'APPLIED' | 'UNDER_REVIEW' | 'SHORTLISTED' | 'REJECTED' | 'HIRED' | 'WITHDRAWN';
+  status: 'APPLIED' | 'UNDER_REVIEW' | 'SHORTLISTED' | 'INTERVIEW' | 'REJECTED' | 'HIRED' | 'WITHDRAWN';
   coverLetter: string | null;
   appliedAt: string;
   updatedAt: string;

@@ -54,6 +54,9 @@ public class ApplicationStatusHistory {
     @JoinColumn(name = "changed_by", nullable = false)
     private User changedBy;
 
+    @Column(name = "reason", length = 500)
+    private String reason;
+
     @CreatedDate
     @Column(name = "changed_at", nullable = false, updatable = false)
     private LocalDateTime changedAt;

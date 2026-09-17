@@ -1,44 +1,47 @@
-# AI-Powered Job & Recruitment Platform
+# HireFlow — AI-Powered Job & Recruitment Platform
 
 A full-stack AI-powered job and recruitment platform connecting candidates with opportunities through intelligent matching, resume analysis, and recruitment automation.
 
-## Main Features
+## Features
 
 ### Candidate Portal
-- Register/login with JWT authentication
-- Complete profile management (skills, experience, education)
-- Upload and parse resumes (PDF, DOCX, TXT)
-- AI-powered job matching with skill gap analysis
-- Career insights and resume improvement suggestions
-- Save jobs, create job alerts
-- Track applications with status timeline
-- View upcoming interviews
+- JWT authentication with role-based access
+- Profile management (skills, experience, education, links)
+- Resume upload and parsing (PDF, DOCX, TXT)
+- AI-powered job matching with scoring
+- Skill gap analysis and career insights
+- Resume improvement suggestions
+- Job search with advanced filters (location, salary, skills, employment type)
+- Save/bookmark jobs and create job alerts
+- Application tracking with status timeline
+- Interview schedule viewer
 - Application analytics and trends
 
 ### Recruiter Portal
-- Register/login with JWT authentication
-- Complete recruiter/company profile
-- Create, publish, and manage job listings
-- Search/filter applications by candidate name, status, job
-- Update application status with notes
-- Schedule and manage interviews
-- View recruitment funnel and hiring analytics
-- Receive notifications
+- Recruiter/company profile management
+- Job creation, publishing, and management
+- AI-generated job descriptions
+- Application review with status updates and notes
+- Candidate search by skills, experience, location
+- AI-powered match scoring per application
+- Interview scheduling and management
+- Recruitment funnel and hiring analytics
 
 ### Admin Portal
 - User management (search, enable/disable, role changes)
 - Job moderation (approve, close, delete)
-- Application oversight
+- Application oversight across platform
 - Platform analytics (user growth, job stats, application trends)
 - Audit log viewer
 - Dashboard with key metrics
 
-### AI Features
-- **Job Matching**: Rule-based + AI-enhanced matching with scoring
+### AI Features (Optional)
+- **Job Matching**: Rule-based + AI-enhanced matching with scoring (0-100)
 - **Skill Gap Analysis**: Identifies missing skills for job requirements
 - **Career Insights**: Personalized recommendations based on profile
 - **Resume Improvement**: AI-powered resume analysis and suggestions
-- All AI features have deterministic fallbacks when AI is unavailable
+- **Job Description Generation**: AI drafts descriptions from title and skills
+- All AI features have deterministic fallbacks when OpenAI API is unavailable
 
 ## Technology Stack
 
@@ -49,27 +52,29 @@ A full-stack AI-powered job and recruitment platform connecting candidates with 
 | Build (FE) | Vite | 8.2.2 |
 | Styling | Tailwind CSS | 4.3.3 |
 | Database | MySQL | 8.0 |
-| ORM | Spring Data JPA + Hibernate | - |
-| Migrations | Flyway | 17 versions |
-| Auth | Spring Security + JWT | - |
+| ORM | Spring Data JPA + Hibernate | — |
+| Migrations | Flyway | 19 versions (V1–V19) |
+| Auth | Spring Security + JWT | — |
 | AI | OpenAI API (optional) | gpt-4o-mini |
 | HTTP Client | Axios | 1.20 |
 | Routing | React Router | 7.18 |
-| Testing | JUnit 5 + Mockito + MockMvc | - |
+| Testing | JUnit 5 + Mockito + MockMvc | — |
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│                  Frontend                        │
+┌──────────────────────────────────────────────────┐
+│                   Frontend                       │
 │         React + TypeScript (Vite)                │
-│    Pages: Auth | Candidate | Recruiter | Admin   │
-│    Services: API Client (Axios + JWT)            │
-├─────────────────────────────────────────────────┤
+│   Pages: Landing | Auth | Candidate | Recruiter  │
+│          | Admin | Design System                  │
+│   Services: API Client (Axios + JWT)             │
+├──────────────────────────────────────────────────┤
 │               REST API (JSON)                    │
-├─────────────────────────────────────────────────┤
-│                 Backend                          │
-│           Spring Boot (Java 21)                  │
+│          Nginx reverse proxy (/api)              │
+├──────────────────────────────────────────────────┤
+│                  Backend                         │
+│            Spring Boot (Java 21)                 │
 │                                                  │
 │  Modules: auth | user | candidate | recruiter    │
 │           job | application | resume | interview  │
@@ -77,38 +82,77 @@ A full-stack AI-powered job and recruitment platform connecting candidates with 
 │           analytics | matching | ai | admin       │
 │                                                  │
 │  Security: JWT + @PreAuthorize role checks       │
-├─────────────────────────────────────────────────┤
-│                MySQL Database                    │
-│          17 Flyway migrations (V1-V17)           │
-└─────────────────────────────────────────────────┘
+│  Database: Flyway migrations (V1–V19)            │
+├──────────────────────────────────────────────────┤
+│                 MySQL Database                   │
+│             22 tables, indexed                    │
+└──────────────────────────────────────────────────┘
 ```
 
-## Prerequisites
+## Database
 
-- **Java**: JDK 21 or higher
-- **Maven**: 3.9+
-- **Node.js**: 20+ LTS
-- **npm**: 10+
-- **MySQL**: 8.0+ (or use H2 for testing)
-- **Docker** (optional): For containerized setup
+- **Engine**: MySQL 8.0
+- **Migrations**: 19 Flyway versions (V1–V19)
+- **Tables**: users, candidate_profiles, recruiter_profiles, jobs, applications, resumes, interviews, notifications, notification_preferences, saved_jobs, job_alerts, audit_logs, and join/history tables
+- **Features**: Proper foreign keys, indexes for search performance, duplicate cleanup (V19)
+- **Seeding**: Demo data via `DataSeeder` (disabled in test profile, `@Profile("!test")`)
 
-## Database Setup
+## Local Setup
 
-### Option 1: Local MySQL
+### Prerequisites
+- Java 21+ (`java -version`)
+- Maven 3.9+ (`mvn -version`)
+- Node.js 20+ LTS (`node -v`)
+- MySQL 8.0+ (or use Docker)
+- Docker + Docker Compose (optional, for containerized setup)
+
+### Option 1: Docker (Recommended)
 
 ```bash
-# Create database
-mysql -u root -e "CREATE DATABASE job_platform_dev;"
+# Clone and configure
+cp .env.example .env
+# Edit .env with your settings (at minimum, set a strong JWT_SECRET)
 
-# Flyway runs automatically on startup — no manual migration needed
+# Start all services
+docker compose up -d
+
+# View logs
+docker compose logs -f
 ```
 
-### Option 2: Docker
+Services:
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8080`
+- MySQL: internal (not exposed publicly)
+
+### Option 2: Manual Setup
 
 ```bash
-docker-compose up mysql -d
-# Database is created automatically with the configured credentials
+# 1. Start MySQL (or use Docker for just MySQL)
+docker compose up mysql -d
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env — set DB credentials, JWT_SECRET
+
+# 3. Build and run backend
+cd backend
+mvn clean package
+java -jar target/job-recruitment-platform-0.1.0-SNAPSHOT.jar
+
+# 4. In a separate terminal — run frontend
+cd frontend
+npm install
+npm run dev
 ```
+
+### Demo Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Candidate | `candidate@demo.com` | `password123` |
+| Recruiter | `recruiter@demo.com` | `password123` |
+| Admin | `admin@demo.com` | `password123` |
 
 ## Environment Variables
 
@@ -116,79 +160,56 @@ Copy `.env.example` to `.env` and configure:
 
 | Variable | Description | Default |
 |---|---|---|
-| `DB_URL` | MySQL JDBC URL | `jdbc:mysql://localhost:3306/job_platform_dev` |
+| `DB_URL` | MySQL JDBC URL | `jdbc:mysql://localhost:3306/job_platform` |
 | `DB_USERNAME` | Database username | `root` |
 | `DB_PASSWORD` | Database password | (empty) |
+| `DB_ROOT_PASSWORD` | MySQL root password | `rootpassword` |
 | `JWT_SECRET` | JWT signing secret (min 32 chars) | dev-only default |
-| `JWT_EXPIRATION_MS` | Token expiration | `86400000` (24h) |
+| `JWT_EXPIRATION_MS` | Token expiration (ms) | `86400000` (24h) |
 | `AI_API_KEY` | OpenAI API key (optional) | (empty — uses fallbacks) |
 | `AI_MODEL` | AI model name | `gpt-4o-mini` |
 | `SERVER_PORT` | Backend port | `8080` |
-| `CORS_ALLOWED_ORIGINS` | Allowed frontend origins | `http://localhost:5173` |
+| `CORS_ALLOWED_ORIGINS` | Allowed frontend origins | `http://localhost:3000` |
+| `VITE_API_BASE_URL` | Frontend API base URL | `/api` |
 
-## Running the Backend
+**Production**: Generate a secure JWT secret with `openssl rand -base64 48`.
 
-```bash
-cd backend
+## API Overview
 
-# First build (compile + test + package)
-mvn clean package
+The backend exposes **103 REST endpoints** across 26 controllers. See [docs/api.md](docs/api.md) for complete documentation.
 
-# Run development server
-mvn spring-boot:run
+### Key Endpoints
 
-# Or run the JAR directly
-java -jar target/job-recruitment-platform-0.1.0-SNAPSHOT.jar
-```
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| POST | `/api/auth/register` | Public | Register new user |
+| POST | `/api/auth/login` | Public | Login, returns JWT |
+| GET | `/api/health` | Public | Health check |
+| GET | `/api/jobs` | Public | Search published jobs |
+| GET | `/api/jobs/{id}` | Public | Get job details |
+| GET | `/api/candidates/me/profile` | CANDIDATE | Get profile |
+| POST | `/api/candidates/me/resumes` | CANDIDATE | Upload resume |
+| GET | `/api/candidates/me/recommendations` | CANDIDATE | AI job recommendations |
+| GET | `/api/candidates/me/jobs/{id}/match` | CANDIDATE | AI match score |
+| POST | `/api/recruiter/jobs` | RECRUITER | Create job |
+| GET | `/api/recruiters/me/analytics/summary` | RECRUITER | Analytics |
+| GET | `/api/admin/users` | ADMIN | Manage users |
+| GET | `/api/admin/analytics/summary` | ADMIN | Platform analytics |
 
-Backend starts at: `http://localhost:8080`
+### Swagger UI
 
-## Running the Frontend
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Production build
-npm run build
-
-# Preview production build
-npm run preview
-```
-
-Frontend starts at: `http://localhost:5173`
-
-## Running with Docker
-
-```bash
-# Start all services (MySQL + Backend + Frontend)
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop all services
-docker-compose down
-```
-
-Services:
-- Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:8080`
-- MySQL: `localhost:3306`
+When the backend is running:
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI Docs: `http://localhost:8080/api-docs`
 
 ## Testing
 
-### Backend Tests
+### Backend (536 tests)
 
 ```bash
 cd backend
 
-# Run all tests (524 tests)
+# Run all tests
 mvn test
 
 # Run specific test class
@@ -213,100 +234,130 @@ npm run lint
 npm run build
 ```
 
-## Production Build
+## Production Deployment
 
-### Backend
+### Docker Production
 
 ```bash
+# 1. Configure production environment
+cp .env.production.example .env.production
+# Edit .env.production with real credentials
+
+# 2. Build and start
+docker compose --env-file .env.production up -d --build
+
+# 3. Verify
+docker compose ps
+docker compose logs backend
+curl http://localhost:8080/api/health
+```
+
+### Manual Production Build
+
+```bash
+# Backend
 cd backend
 mvn clean package -DskipTests
-# Output: target/job-recruitment-platform-0.1.0-SNAPSHOT.jar
-```
+java -jar target/job-recruitment-platform-0.1.0-SNAPSHOT.jar
 
-### Frontend
-
-```bash
+# Frontend
 cd frontend
 npm run build
-# Output: frontend/dist/
+# Deploy frontend/dist/ to your static host
 ```
 
-## API Documentation
+### Production Checklist
 
-When the backend is running:
-- Swagger UI: `http://localhost:8080/swagger-ui.html`
-- API Docs: `http://localhost:8080/api-docs`
+- [ ] Set strong `JWT_SECRET` (min 32 chars)
+- [ ] Set strong database passwords
+- [ ] Configure `CORS_ALLOWED_ORIGINS` for your domain
+- [ ] Enable HTTPS (reverse proxy / load balancer)
+- [ ] Disable MySQL public access
+- [ ] Verify `SPRING_PROFILES_ACTIVE=prod`
+- [ ] Set `AI_API_KEY` if using AI features
+- [ ] Monitor `/api/health` endpoint
+- [ ] Review backend logs for errors
 
-### Key Endpoints
+## Project Structure
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/api/auth/register` | Public | Register new user |
-| POST | `/api/auth/login` | Public | Login, returns JWT |
-| GET | `/api/health` | Public | Health check |
-| GET | `/api/jobs` | Public | Search published jobs |
-| GET | `/api/candidates/me/resumes` | CANDIDATE | List resumes |
-| POST | `/api/candidates/me/resumes` | CANDIDATE | Upload resume |
-| GET | `/api/candidates/me/recommendations` | CANDIDATE | Job recommendations |
-| GET | `/api/candidates/me/jobs/{id}/match` | CANDIDATE | AI job match |
-| GET | `/api/recruiter/jobs` | RECRUITER | List recruiter's jobs |
-| POST | `/api/recruiter/jobs` | RECRUITER | Create job |
-| GET | `/api/recruiters/me/analytics/summary` | RECRUITER | Analytics |
-| GET | `/api/admin/users` | ADMIN | Manage users |
-| GET | `/api/admin/analytics/summary` | ADMIN | Admin analytics |
+```
+job-portal/
+├── backend/
+│   ├── src/main/java/com/jobplatform/
+│   │   ├── auth/           # Authentication (login, register, JWT)
+│   │   ├── admin/          # Admin management (users, jobs, audit)
+│   │   ├── analytics/      # Analytics (candidate, recruiter, admin)
+│   │   ├── application/    # Application management
+│   │   ├── candidate/      # Candidate profiles
+│   │   ├── config/         # Security, CORS, JPA, data seeding
+│   │   ├── exception/      # Global error handling
+│   │   ├── health/         # Health check endpoint
+│   │   ├── interview/      # Interview scheduling
+│   │   ├── job/            # Job CRUD and search
+│   │   ├── jobalert/       # Job alert subscriptions
+│   │   ├── matching/       # AI matching engine
+│   │   ├── notification/   # Notifications and preferences
+│   │   ├── recruiter/      # Recruiter profiles
+│   │   ├── resume/         # Resume upload and parsing
+│   │   ├── savedjob/       # Saved/bookmarked jobs
+│   │   └── security/       # JWT filter and utilities
+│   ├── src/main/resources/
+│   │   ├── application.yml
+│   │   ├── application-prod.yml
+│   │   └── db/migration/   # V1–V19 Flyway migrations
+│   └── src/test/java/      # 536 tests
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   │   ├── admin/      # Admin sidebar, layout
+│   │   │   ├── auth/       # Auth layout, password input
+│   │   │   ├── candidate/  # Candidate sidebar
+│   │   │   ├── landing/    # Landing page components
+│   │   │   ├── layout/     # AppShell, Sidebar, TopBar
+│   │   │   ├── notifications/
+│   │   │   ├── recruiter/  # Recruiter sidebar, layout
+│   │   │   └── ui/         # Button, Card, Badge, Input, etc.
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── layouts/        # Page layouts
+│   │   ├── pages/          # Route pages (auth, candidate, recruiter, admin)
+│   │   ├── routes/         # AppRouter
+│   │   ├── services/       # API service layer
+│   │   ├── styles/         # Shared styles
+│   │   ├── types/          # TypeScript type definitions
+│   │   └── utils/          # Utility functions
+│   ├── nginx.conf          # Nginx config for Docker
+│   └── vite.config.ts
+├── docs/
+│   ├── architecture.md
+│   └── api.md
+├── docker-compose.yml
+├── .env.example
+├── .env.production.example
+└── README.md
+```
 
-## Default URLs
+## Security
 
-| Service | Development | Docker |
-|---|---|---|
-| Frontend | `http://localhost:5173` | `http://localhost:3000` |
-| Backend API | `http://localhost:8080` | `http://localhost:8080` |
-| Swagger UI | `http://localhost:8080/swagger-ui.html` | Same |
-| Health Check | `http://localhost:8080/api/health` | Same |
+- **Authentication**: JWT tokens with configurable expiration (default 24h)
+- **Password Hashing**: BCrypt (Spring Security)
+- **Authorization**: Role-based (`@PreAuthorize`) — CANDIDATE, RECRUITER, ADMIN
+- **IDOR Protection**: All resource access checks ownership via `CurrentUserUtil`
+- **Input Validation**: Jakarta Bean Validation on all DTOs
+- **CORS**: Configurable allowed origins (no wildcard in production)
+- **SQL Injection**: Parameterized queries via JPA/Hibernate
+- **File Upload**: Size limits enforced (10MB max)
+- **Error Handling**: Stack traces hidden in production (`include-stacktrace: never`)
+- **Secrets**: All sensitive values via environment variables, never hardcoded
+- **Git History**: No secrets committed (verified — only `.env.example` files tracked)
 
-## Troubleshooting
+## Known Limitations
 
-### Backend won't start
-- Ensure MySQL is running and accessible
-- Check `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` environment variables
-- Verify Java 21: `java -version`
-
-### Frontend build fails
-- Run `npm install` to install dependencies
-- Check Node.js version: `node -v` (requires 20+)
-- Clear cache: `rm -rf node_modules && npm install`
-
-### Database migration fails
-- Ensure the database exists before starting
-- Check Flyway migration files in `backend/src/main/resources/db/migration/`
-- Do not modify already-applied migrations
-
-### Tests fail
-- Ensure H2 test database is available (in-memory, no setup needed)
-- Run `mvn test` from the `backend/` directory
-
-## Security Notes
-
-- **Never commit secrets** — use environment variables for all sensitive values
-- JWT secrets must be at least 32 characters in production
-- Database passwords should be strong and unique per environment
-- The default `JWT_SECRET` in `application.yml` is for development only
-- All API endpoints enforce role-based authorization
-- Input validation is applied on all DTOs
-- CORS is restricted to configured origins
-
-## Project Status
-
-**Development Complete** — All 30 planned steps have been implemented and verified:
-
-- 524 backend tests passing
-- Frontend TypeScript clean, production build passes
-- 17 Flyway database migrations
-- JWT authentication with role-based authorization
-- AI features with deterministic fallbacks
-- Security hardened (IDOR protection, input validation, no hardcoded secrets)
-- Docker containerization ready
-- Comprehensive documentation
+- AI features require an OpenAI API key; without it, deterministic fallbacks are used
+- File uploads stored on local filesystem (not cloud storage)
+- No email service integration (notifications are in-app only)
+- No WebSocket for real-time updates (uses polling)
+- No automated CI/CD pipeline configured
+- Single-server deployment (no horizontal scaling setup)
 
 ## License
 

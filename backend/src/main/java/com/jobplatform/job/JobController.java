@@ -6,12 +6,15 @@ import com.jobplatform.job.dto.JobResponse;
 import com.jobplatform.job.dto.JobSummaryResponse;
 import com.jobplatform.job.enums.EmploymentType;
 import com.jobplatform.job.enums.WorkplaceType;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -33,6 +36,9 @@ public class JobController {
             @RequestParam(required = false) Integer experienceMax,
             @RequestParam(required = false) Integer salaryMin,
             @RequestParam(required = false) Integer salaryMax,
+            @RequestParam(required = false) String skills,
+            @RequestParam(required = false) String companyName,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postedAfter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "newest") String sort) {
@@ -40,6 +46,7 @@ public class JobController {
         PagedResponse<JobSummaryResponse> response = jobService.searchPublishedJobsCombined(
                 q, location, employmentType, workplaceType,
                 experienceMin, experienceMax, salaryMin, salaryMax,
+                skills, companyName, postedAfter,
                 page, size, sort);
 
         return ResponseEntity.ok(ApiResponse.success(response));

@@ -120,6 +120,15 @@ public class InterviewService {
     }
 
     @Transactional(readOnly = true)
+    public List<RecruiterInterviewResponse> getInterviewsByApplication(User recruiter, Long applicationId) {
+        if (recruiter.getRole() != UserRole.RECRUITER) {
+            throw new BadRequestException("Only recruiters can view interviews");
+        }
+        List<Interview> interviews = interviewRepository.findByApplicationJobRecruiterAndApplicationIdOrderByScheduledStartAsc(recruiter, applicationId);
+        return interviews.stream().map(this::mapToRecruiterResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<RecruiterInterviewResponse> getUpcomingRecruiterInterviews(User recruiter) {
         if (recruiter.getRole() != UserRole.RECRUITER) {
             throw new BadRequestException("Only recruiters can view interviews");

@@ -52,5 +52,6 @@ public class CandidateApplicationDetailResponse {
         private ApplicationStatus newStatus;
         private String changedByName;
         private LocalDateTime changedAt;
+        private String reason;
     }
 }

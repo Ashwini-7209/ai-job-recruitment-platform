@@ -96,7 +96,7 @@ class RecruiterJobControllerTests {
                         .header("Authorization", "Bearer " + recruiterToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createValidJobRequest())))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.title").value("Software Engineer"))
                 .andExpect(jsonPath("$.data.status").value("DRAFT"));
@@ -283,7 +283,7 @@ class RecruiterJobControllerTests {
         mockMvc.perform(delete("/api/recruiter/jobs/" + jobId)
                         .header("Authorization", "Bearer " + recruiterToken)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
