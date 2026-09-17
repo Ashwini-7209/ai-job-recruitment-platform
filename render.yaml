@@ -1,22 +1,25 @@
 services:
   - type: web
     name: hireflow-backend
-    runtime: java
+    runtime: docker
     plan: free
-    rootDir: backend
-    buildCommand: "./mvnw package -DskipTests -q"
-    startCommand: "java -jar target/job-recruitment-platform-*.jar"
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     envVars:
-      - key: JAVA_VERSION
-        value: "21"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
+      - key: PORT
+        value: "8080"
       - key: DB_URL
         sync: false
       - key: DB_USERNAME
         sync: false
       - key: DB_PASSWORD
         sync: false
+      - key: DB_POOL_MAX
+        value: "10"
+      - key: DB_POOL_MIN
+        value: "2"
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRATION_MS
@@ -47,7 +50,7 @@ services:
     name: hireflow-frontend
     plan: free
     rootDir: frontend
-    buildCommand: "npm install && npm run build"
+    buildCommand: npm install && npm run build
     staticPublishPath: dist
     routes:
       - type: rewrite

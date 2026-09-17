@@ -1,0 +1,11 @@
+target/
+!target/job-recruitment-platform-*.jar
+.idea/
+*.iml
+*.log
+.env
+.env.*
+docker-compose*.yml
+.git/
+.gitignore
+docker-compose.override.yml
