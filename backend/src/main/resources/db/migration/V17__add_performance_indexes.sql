@@ -1,16 +1,19 @@
 -- Step 17: Add performance indexes for search, filtering, and pagination
+-- Drop indexes from earlier migrations that V19 will recreate with wider columns
+
+-- Fix: Drop V5's 2-col index, recreate as 3-col from V19
+DROP INDEX idx_applications_candidate_status ON applications;
+CREATE INDEX idx_applications_candidate_status ON applications(candidate_id, status, applied_at DESC);
+
+-- Fix: Drop V12's 2-col index, recreate as 3-col from V19
+DROP INDEX idx_notifications_user_read ON notifications;
+CREATE INDEX idx_notifications_user_read ON notifications(user_id, is_read, created_at DESC);
 
 -- Jobs: status + published_at for public job listing
 CREATE INDEX idx_jobs_status_published ON jobs(status, published_at DESC);
 
--- Applications: candidate + status + applied_at for candidate application search
-CREATE INDEX idx_applications_candidate_status ON applications(candidate_id, status, applied_at DESC);
-
 -- Applications: job_id + status for recruiter applicant search
 CREATE INDEX idx_applications_job_status ON applications(job_id, status);
-
--- Notifications: user + read + created_at for notification listing and unread count
-CREATE INDEX idx_notifications_user_read ON notifications(user_id, is_read, created_at DESC);
 
 -- Saved jobs: candidate + created_at for saved job listing
 CREATE INDEX idx_saved_jobs_candidate_date ON saved_jobs(candidate_id, created_at DESC);
